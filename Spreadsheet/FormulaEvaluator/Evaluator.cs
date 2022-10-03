@@ -1,203 +1,181 @@
 ﻿using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using static System.Net.Mime.MediaTypeNames;
+using System.Collections;
 
+/**
+ * Written by Zachery Blomquist
+ * Version 9/2/22
+ */
 namespace FormulaEvaluator
 {
+    /**
+     * This class evaluates an formula with given values, operations, and variables
+     */
     public static class Evaluator
     {
         public delegate int Lookup(String v);
 
+        /**
+         * This static method is the main method in evaluating the formula given.
+         * Returns the final calculated value from a PEMDAS algorithm
+         */
         public static int Evaluate(String exp, Lookup variableEvaluator)
         {
-
-            /// <summary>
-            ///   "The method should evaluate the expression, using the algorithm above (or implemented below)
-            ///    It should return the value of the expression if it has a value,
-            ///    or throw an ArgumentException if any of the possible errors from the algorithm occurs."
-            ///    Uses some helper functions and extensions for the C# stack class.
-            /// </summary>
-            /// <param name="exp"> Infix expression to be evaluated. </param>
-            /// <param name="variableEvaluator"> 
-            /// Lookup table for different variables.
-            /// Also responsible for throwing exceptions whenever a variable or token is not valid.
-            /// </param>
-            /// <returns> Evaluation of exp parameter. </returns>
-            /// <exception cref="ArgumentException"> 
-            /// Default exception whenever an error is encountered within this method itself.
-            /// Unrelated to errors thrown by the variableEvaluator delegate parameter.
-            /// </exception>"
-            string validPattern = "^[a-zA-Z]+[0-9]+$";
-            if (exp.Trim() == "")
-            {
-                throw new ArgumentException();
-            }
-            exp = exp.Trim();
             string[] substrings = Regex.Split(exp, "(\\()|(\\))|(-)|(\\+)|(\\*)|(/)");
-            Stack<int> values = new Stack<int>();
-            Stack<string> operators = new Stack<string>();
+            //The value at the current token through the search
+            int currentValue;
+            //The stack that contains values
+            Stack<int> valStack = new Stack<int>();
+            //The stack that contains operations
+            Stack<string> opStack = new Stack<string>();
+            //Checks each token in the substring and evaluates the final result
+
+            //A for loop that trims all the tokens of whitespace
             for (int i = 0; i < substrings.Length; i++)
             {
-                if (String.IsNullOrEmpty(substrings[i]))                // empty/none substring element case
+                substrings[i] = String.Concat(substrings[i].Where(c => !char.IsWhiteSpace(c)));
+
+            }
+            //Afterwards, deletes any empty tokens from substrings
+            substrings = substrings.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+            foreach (string substring in substrings)
+            {
+                if (int.TryParse(substring, out int n))
                 {
-                    continue;
-                }
-                else if (int.TryParse(substrings[i], out int temp))    // blatant (or non-variable) int element case
-                {
-                    values.Push(temp);
-                    CheckMultiplyDivide(values, operators);
-                }
-                else if ("+-".Contains(substrings[i]))                  // +- element case
-                {
-                    CheckPlusMinus(values, operators);
-                    operators.Push(substrings[i]);
-                }
-                else if ("*/".Contains(substrings[i]))                  // */ element case
-                {
-                    operators.Push(substrings[i]);
-                }
-                else if (substrings[i] == "(")                          // open paranthesis element case
-                {
-                    operators.Push(substrings[i]);
-                }
-                else if (substrings[i] == ")")                          // close paranthesis element case CHECK OFF WITH TAs
-                {
-                    CheckPlusMinus(values, operators);
-                    if (operators.Count == 0)
+
+                    //If the operator in the opStack is * or / peform an operation
+                    //With that operator accordingly with the value popped from the stack and the current value
+                    //If not, pushes current value onto stack
+                    if (StackExtensions.IsOnTop(opStack, "*") || StackExtensions.IsOnTop(opStack, "/"))
                     {
-                        throw new ArgumentException();
+                        //Performs the proper calculation through pushresult, and pushes the result onto the valStack
+                        StackExtensions.PushResult(valStack, opStack.Pop(), n);
                     }
-                    if (operators.Pop() != "(")
+                    else
+                        valStack.Push(n);
+                }
+                //Checks if the current substring is + or -
+                else if (substring is "+" || substring is "-")
+                {
+                    //Checks if stack in operation stack is empty and checks for + or - otherwise
+                    //If check fails pushes operation onto op stack
+                    if (StackExtensions.IsOnTop(opStack, "+") || StackExtensions.IsOnTop(opStack, "-"))
                     {
-                        throw new ArgumentException();
+                        //Pushes result of + or - case with PushResult
+                        StackExtensions.PushResult(valStack, opStack.Pop(), valStack.Pop());
+                        //Removes last operation from opStack
+                        opStack.Push(substring);
                     }
-                    CheckMultiplyDivide(values, operators);
-                    //if (Regex.IsMatch("[0-9]+", substrings[i+1])
-                    //    || Regex.IsMatch(validPattern, substrings[i+1]))
-                    //    {
-                    //    throw new ArgumentException();
-                    //}
+                    else
+                        opStack.Push(substring);
                 }
-                else                                                    // variable element case
+                //Checks for * / and (, then pushes onto operation stack
+                else if (substring is "*" || substring is "/" || substring is "(")
                 {
-                    // case also accounts for any other unknown symbols via the variableEvaluator.
-                    // I trust that whoever sets up the delegate for this code will account for this wisely.
-                    if (!Regex.IsMatch(substrings[i], validPattern))
+                    opStack.Push(substring);
+                }
+                else if (substring is ")")
+                {
+                    //Pushes result from last operation and last to values from the stack
+                    if (!(opStack.Peek() is "("))
                     {
-                        throw new ArgumentException();
+                        StackExtensions.PushResult(valStack, opStack.Pop(), valStack.Pop());
+                        if (opStack.Count is 0 || !(opStack.Peek() is "("))
+                            throw new ArgumentException("expected a ( in the stack, but was not there");
+                        //Gets rid of ( from the stack
+                        opStack.Pop();
+                        //If there is a * or / before the (, operate that function
+                        if (!(opStack.Count is 0) && (opStack.Peek() is "*" || opStack.Peek() is "/"))
+                        {
+                            StackExtensions.PushResult(valStack, opStack.Pop(), valStack.Pop());
+                        }
                     }
-                    int temp1 = variableEvaluator(substrings[i]);
-                    values.Push(temp1);
-                    CheckMultiplyDivide(values, operators);
+                    //If ( is the next operator, than there is no need for it, remove
+                    else
+                        opStack.Pop();
+
                 }
-            }
-
-            /*
-             * after the final token has been processed
-             */
-
-            if (operators.Count == 1)
-            // addition or subtraction should be the only two options for the operation left,
-            // or else something is wrong.
-            {
-                if (!CheckPlusMinus(values, operators))
+                //else for variables
+                else
                 {
-                    throw new ArgumentException();
+                    //Checks if the current substring is a valid varaible by checking the first character as a letter
+                    //And the last character as a number
+                    if (!(char.IsLetter(substring.First()) && char.IsDigit(substring.Last())))
+                        throw new ArgumentException("Not a valid variable");
+                    //Grabs the value from the variable
+                    currentValue = variableEvaluator(substring);
+
+                    //Checks if the operator stack is empty, then checks which variable is on top for * or /
+                    if (StackExtensions.IsOnTop(opStack, "*") || StackExtensions.IsOnTop(opStack, "/"))
+                    {
+                        StackExtensions.PushResult(valStack, opStack.Pop(), currentValue);
+                    }
+                    //Otherwise, just push the value onto the value stack
+                    else
+                        valStack.Push(currentValue);
                 }
             }
-            else if (operators.Count > 1)
+            //If there is an operation in opStack, runs more calculations
+            if (opStack.Count > 0)
             {
-                throw new ArgumentException();
-            }
-            return (values.Pop());
-        }
+                //Checks if the valStack has more than 1 value
+                //Otherwise throws argument exception
+                if (valStack.Count < 1)
+                    throw new ArgumentException("val stack has less than 2 values");
 
-        private static void Operate(Stack<int> values, Stack<String> operators)
-        {
-            // the same idea essentially applies to all of these operations.
-            // the error shown is also the only one relevant to the cause at hand.
-            int temp1, temp2;   // there must be some better way to do this but I didn't have enough time to check
-            String o;
-            if (values.HasEnough() && operators.HasEnough())
-            {
-                temp1 = values.Pop();
-                temp2 = values.Pop();
-                o = operators.Pop();
+                //Calculates and pushes the result of the last 2 values with the last operation
+                StackExtensions.PushResult(valStack, opStack.Pop(), valStack.Pop());
             }
-            else
-            {
-                throw new ArgumentException();
-            }
-            if (o == "+")
-            {
-                values.Push(temp2 + temp1);
-            }
-            else if (o == "-")
-            {
-                values.Push(temp2 - temp1);
-            }
-            else if (o == "*")
-            {
-                values.Push(temp2 * temp1);
-            }
-            else if (o == "/")
-            {
-                if (temp1 == 0)             // removes division by zero
-                {
-                    throw new ArgumentException();
-                }
-                values.Push(temp2 / temp1);
-            }
-            else
-            {
-                throw new ArgumentException();
-            }
-        }
-
-        // these methods are kind of silly but it was fun implementing them.
-        private static bool CheckPlusMinus(Stack<int> values, Stack<String> operators)
-        {
-            if (operators.IsOnTop("+", "-"))
-            {
-                Operate(values, operators);
-                return true;
-            }
-            return false;
-        }
-        private static bool CheckMultiplyDivide(Stack<int> values, Stack<String> operators)
-        {
-            if (operators.IsOnTop("*", "/"))
-            {
-                Operate(values, operators);
-                return true;
-            }
-            return false;
+            //If there is still more than 1 value, throw argument exception
+            if (!(valStack.Count is 1))
+                throw new ArgumentException("val stack does not have exactly one value in it");
+            return valStack.Pop();
         }
     }
-
-    static class StackExtensions
+    /**
+     * A static class for stack extensions
+     */
+    public static class StackExtensions
     {
-        public static bool IsOnTop(this Stack<String> stack, String str1, String str2)
+        /**
+         * This extended method checks if the operation stack is empty and checks if the operation stack contains the right operation
+         */
+        public static bool IsOnTop(this Stack<String> stack, String c)
         {
-            // typically called in pairs as multiplication and addition are both different counterparts
-            // and correlate to division and subtraction, as well.
-            if (!stack.HasEnough())
+            return stack.Count > 0 && stack.Peek() == c;
+        }
+        /**
+         * This extended method does the proper calculations for all cases of + - / * and the closing )
+         * This extended method uses the valStack class to perform such operations, then pushes the result onto the stack
+         */
+        public static void PushResult(this Stack<int> stack, String c, int val)
+        {
+            //The final value from the calculations
+            int finalVal;
+            if (c is "*" && stack.Count > 0)
             {
-                return false;
+                finalVal = stack.Pop() * val;
+                stack.Push(finalVal);
             }
-            return (stack.Peek() == str1 || stack.Peek() == str2);
-        }
-
-        public static bool HasEnough(this Stack<int> stack)
-        {
-            // called only whenever necessary. If something doesn't have enough, there should be an error.
-            // equations require two operands.
-            return stack.Count >= 2;
-        }
-
-        public static bool HasEnough(this Stack<String> stack)
-        {
-            // called only whenever necessary. If something doesn't have enough, there should be an error.
-            // equations require one operator.
-            return stack.Count >= 1;
+            else if (c is "/" && stack.Count > 0)
+            {
+                //Checks if the value is 0, if it is throws an argument exception
+                if (val is 0)
+                    throw new ArgumentException("Cannot divide by zero");
+                finalVal = stack.Pop() / val;
+                stack.Push(finalVal);
+            }
+            else if (c is "+" && stack.Count > 0)
+            {
+                finalVal = stack.Pop() + val;
+                stack.Push(finalVal);
+            }
+            else if (c is "-" && stack.Count > 0)
+            {
+                finalVal = stack.Pop() - val;
+                stack.Push(finalVal);
+            }
         }
     }
 }
