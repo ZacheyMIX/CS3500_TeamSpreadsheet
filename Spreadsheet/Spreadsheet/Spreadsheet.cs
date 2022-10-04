@@ -121,7 +121,7 @@ namespace SS
         /// Four argument constructor. Same as three argument constructor, aside from a new first parameter.
         /// First parameter allows for reading Json files.
         /// </summary>
-        
+
         public Spreadsheet(string path, Func<string, bool> isValid, Func<string, string> normalize, string version)
             : base(isValid, normalize, version)
         {
@@ -145,7 +145,7 @@ namespace SS
             cells = new();
             graph = new();
             Changed = false;
-            foreach(string cellname in inside.cells.Keys)
+            foreach (string cellname in inside.cells.Keys)
             {
                 string normalized = Normalize(cellname);
                 // cellname is the interior Spreadsheet's cell name,
@@ -157,13 +157,13 @@ namespace SS
 
                     else
                         throw new SpreadsheetReadWriteException("Read cellname is no longer valid.");
-                    
+
                 }
                 else
                     throw new SpreadsheetReadWriteException("Read cellname does not pass as a valid variable.");
             }
         }
-        
+
         /// <summary>
         /// Enumerates the names of all the non-empty cells in the spreadsheet.
         /// </summary>
@@ -294,6 +294,11 @@ namespace SS
                 graph.ReplaceDependents(name, GetDirectDependents(name));
                 throw new CircularException();
             }
+            foreach (string token in proposed.GetVariables())
+            {
+                if (!IsValid(token))
+                    throw new FormulaFormatException("Invalid variable name used in formula.");
+            }
         }
 
         // ADDED FOR PS5
@@ -375,8 +380,8 @@ namespace SS
              *   T:System.Security.SecurityException:
              *     The caller does not have the required permission.
             */
-            if (!Regex.IsMatch(filename, @"\.json$"))
-                throw new SpreadsheetReadWriteException("Error when saving Spreadsheet Json to specified path: " + filename);
+            //if (!Regex.IsMatch(filename, @"\.json$"))
+            //    throw new SpreadsheetReadWriteException("Error when saving Spreadsheet Json to specified path: " + filename);
 
             string serialized = JsonConvert.SerializeObject(this, Formatting.Indented);
             bool beforeSave = Changed;
@@ -388,7 +393,7 @@ namespace SS
             catch
             {
                 Changed = beforeSave;
-                throw new SpreadsheetReadWriteException("Error when saving Spreadsheet Json to specified path: "+filename);
+                throw new SpreadsheetReadWriteException("Error when saving Spreadsheet Json to specified path: " + filename);
             }
         }
 
@@ -461,7 +466,8 @@ namespace SS
             else if (content.Length > 0)                            // formula case
                 if (content[0] == '=')
                 {
-                    Formula usedFormula = new(content.Remove(0, 1));
+                    content = content.Remove(0, 1);
+                    Formula usedFormula = new(content);
                     toChange = SetCellContents(name, usedFormula);  // throws on return
                     changeHelper(toChange);
                     return toChange;

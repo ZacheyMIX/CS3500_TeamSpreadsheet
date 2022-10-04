@@ -123,21 +123,24 @@ namespace SpreadsheetUtilities
                 {
                     expression += token;
                     shouldBeNumber = true;
-                }else if (shouldBeNumber && token == "(")
+                }
+                else if (shouldBeNumber && token == "(")
                 {
                     // an open parentheses should only go wherever a number goes, but should be immediately followed by a number.
                     // this is why we make sure that this token "should be a number", but not toggle that bool so that
                     // the next token should also either be an open parentheses or a number.
                     openParens++;
                     expression += token;
-                }else if (!shouldBeNumber && token == ")")
+                }
+                else if (!shouldBeNumber && token == ")")
                 {
                     // likewise to the open parenthesis case, a close parentheses should only go wherever an operator goes,
                     // but should be immediately followed by another operator, if not nothing. this is why we correlate this
                     // with the operator half of the shouldBeNumber toggle, but without changing it.
                     closeParens++;
                     expression += token;
-                }else
+                }
+                else
                 {
                     throw new FormulaFormatException("Invalid syntax when constructing a Formula object."); //EndingTokenRule1 fails here
                 }
@@ -177,11 +180,11 @@ namespace SpreadsheetUtilities
         /// </summary>
         public object Evaluate(Func<string, double> lookup)
         {
-            IEnumerable < string > tokens = GetTokens(expression);
+            IEnumerable<string> tokens = GetTokens(expression);
             Stack<double> values = new Stack<double>();
             Stack<string> operators = new Stack<string>();
             bool? operatorChecker;
-            foreach(string token in tokens)
+            foreach (string token in tokens)
             {
                 if (double.TryParse(token, out double temp))    // blatant (or non-variable) int element case
                 {
@@ -219,7 +222,7 @@ namespace SpreadsheetUtilities
                 {
                     // case also accounts for any other unknown symbols via the variableEvaluator.
                     // I trust that whoever sets up the delegate for this code will account for this wisely.
-                    
+
                     double temp1;
                     try
                     {
@@ -244,7 +247,14 @@ namespace SpreadsheetUtilities
             {
                 operatorChecker = CheckPlusMinus(values, operators);
             }
-            return (values.Pop());
+            try
+            {
+                return (values.Pop());
+            }
+            catch
+            {
+                return new FormulaError("Division by zero.");
+            }
         }
 
         /// <summary>
@@ -321,7 +331,7 @@ namespace SpreadsheetUtilities
         {
             IEnumerable<String> e = GetTokens(expression);
             HashSet<String> returned = new();
-            foreach(String token in e)
+            foreach (String token in e)
             {
                 if (VerifyVariable(token, s => s, s => true))
                 {   // statement implies current token is a variable
@@ -470,7 +480,7 @@ namespace SpreadsheetUtilities
         /// </summary>
         public string Reason { get; private set; }
 
-        
+
     }
 
     /// <summary>
@@ -488,13 +498,13 @@ namespace SpreadsheetUtilities
             }
             return (stack.Peek() == str1 || stack.Peek() == str2);
         }
-        
+
         public static bool HasEnough(this Stack<String> stack)
         {
             // called only whenever necessary. If something doesn't have enough, there should be an error.
             // equations require one operator.
             return stack.Count >= 1;
         }
-        
+
     }
 }
