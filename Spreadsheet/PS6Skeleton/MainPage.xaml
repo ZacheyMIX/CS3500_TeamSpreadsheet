@@ -7,6 +7,8 @@
         <MenuBarItem Text="File">
             <MenuFlyoutItem Text="New" Clicked="NewClicked" />
             <MenuFlyoutItem Text="Open" Clicked="OpenClicked" />
+            <MenuFlyoutItem Text="Save" Clicked="SaveClicked" />
+            <MenuFlyoutItem Text="Save As" Clicked="SaveAsClicked" />
         </MenuBarItem>
     </ContentPage.MenuBarItems>
     <Grid>

@@ -1,4 +1,5 @@
 ﻿using SS;
+using System.Data.Common;
 
 namespace SpreadsheetGUI;
 
@@ -68,5 +69,15 @@ public partial class MainPage : ContentPage
             Console.WriteLine("Error opening file:");
             Console.WriteLine(ex);
         }
+    }
+
+    private async void SaveAsClicked(Object sender, EventArgs e)
+    {
+        
+    }
+
+    private async void SaveClicked(Object sender, EventArgs e)
+    {
+        
     }
 }
