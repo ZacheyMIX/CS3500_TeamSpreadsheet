@@ -15,29 +15,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="PS6Skeleton\SpreadsheetGUI.csproj" />
+    <Compile Remove="PS6Skeleton\**" />
+    <EmbeddedResource Remove="PS6Skeleton\**" />
+    <None Remove="PS6Skeleton\**" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="PS6Skeleton\App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="PS6Skeleton\MainPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="PS6Skeleton\Platforms\Windows\App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="PS6Skeleton\Resources\Styles\Colors.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
-    <None Update="PS6Skeleton\Resources\Styles\Styles.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </None>
   </ItemGroup>
 
 </Project>
