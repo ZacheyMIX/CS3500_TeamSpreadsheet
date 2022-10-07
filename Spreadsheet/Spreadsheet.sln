@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spreadsheet", "Spreadsheet\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpreadsheetTests", "SpreadsheetTests\SpreadsheetTests.csproj", "{76CC5C73-1D65-4AC2-82C9-D03376D8981C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormulaGradeTests", "FormulaGradeTests\FormulaGradeTests.csproj", "{5BB67AB1-D7DC-4098-89B4-AA568F8CC241}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FormulaGradeTests", "FormulaGradeTests\FormulaGradeTests.csproj", "{5BB67AB1-D7DC-4098-89B4-AA568F8CC241}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpreadsheetGUI", "PS6Skeleton\SpreadsheetGUI.csproj", "{E62C7007-9884-494E-AF67-1ED775784B7F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,11 @@ Global
 		{5BB67AB1-D7DC-4098-89B4-AA568F8CC241}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BB67AB1-D7DC-4098-89B4-AA568F8CC241}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BB67AB1-D7DC-4098-89B4-AA568F8CC241}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E62C7007-9884-494E-AF67-1ED775784B7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E62C7007-9884-494E-AF67-1ED775784B7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E62C7007-9884-494E-AF67-1ED775784B7F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{E62C7007-9884-494E-AF67-1ED775784B7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E62C7007-9884-494E-AF67-1ED775784B7F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
