@@ -380,8 +380,6 @@ namespace SS
              *   T:System.Security.SecurityException:
              *     The caller does not have the required permission.
             */
-            //if (!Regex.IsMatch(filename, @"\.json$"))
-            //    throw new SpreadsheetReadWriteException("Error when saving Spreadsheet Json to specified path: " + filename);
 
             string serialized = JsonConvert.SerializeObject(this, Formatting.Indented);
             bool beforeSave = Changed;
