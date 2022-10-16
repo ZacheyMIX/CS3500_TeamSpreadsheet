@@ -37,17 +37,13 @@ public partial class MainPage : ContentPage
     private void displaySelection(SpreadsheetGrid grid)
     {
         
-        spreadsheetGrid.GetSelection(out int col, out int row);
-        spreadsheetGrid.GetValue(col, row, out string value);
+        spreadsheetGrid.GetSelection(out int col, out int row); // gets positional data for selected column and row
+        spreadsheetGrid.GetValue(col, row, out string value);   // gets value data for selected column and row
         if (value == "")
         {
-            /*
-            spreadsheetGrid.SetValue(col, row, DateTime.Now.ToLocalTime().ToString("T"));
-            spreadsheetGrid.GetValue(col, row, out value);
-            DisplayAlert("Selection:", "column " + col + " row " + row + " value " + value, "OK");
-            */
-            spreadsheetGrid.SetValue(col, row, "clicked");
-            spreadsheetGrid.GetValue(col, row, out value);
+            spreadsheetGrid.SetValue(col, row, DateTime.Now.ToLocalTime().ToString("T"));           // changes value of specified cell
+            spreadsheetGrid.GetValue(col, row, out value);      // same as before
+            DisplayAlert("Selection:", "column " + col + " row " + row + " value " + value, "OK");  // OS alerts. display box over the program
         }
     }
 
@@ -56,16 +52,17 @@ public partial class MainPage : ContentPage
     /// </summary>
     private void NewClicked(Object sender, EventArgs e)
     {
-        spreadsheetGrid.Clear();
-        model = new();  // MAKE SURE TO CHANGE ON RELEASES
+        spreadsheetGrid.Clear();    // clears display
+        model = new();              // MAKE SURE TO CHANGE ON RELEASES
     }
 
     /// <summary>
-    /// Opens any file as text and prints its contents.
+    /// Opens any(!!!) file as text and prints its contents.
     /// Note the use of async and await, concepts we will learn more about
     /// later this semester.
     /// </summary>
     private async void OpenClicked(Object sender, EventArgs e)
+        // if we wish to use this as 
     {
         try
         {
@@ -76,7 +73,6 @@ public partial class MainPage : ContentPage
 
                 string fileContents = File.ReadAllText(fileResult.FullPath);
                 Console.WriteLine("First 100 file chars:\n" + fileContents.Substring(0, 100));
-                model = new(fileResult.ToString(), s => true, s => s, "default");   // MAKE SURE TO CHANGE ON RELEASES
             }
             else
             {
