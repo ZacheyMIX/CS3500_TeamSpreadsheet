@@ -30,7 +30,7 @@ public partial class MainPage : ContentPage
         // take a SpreadsheetGrid as its parameter and return nothing.  So we
         // register the displaySelection method below.
         spreadsheetGrid.SelectionChanged += displaySelection;
-        spreadsheetGrid.SetSelection(2, 3);
+        spreadsheetGrid.SetSelection(2,3);
         path = "";
         model = new(s => true, s => s, "ps6");
     }
@@ -41,7 +41,6 @@ public partial class MainPage : ContentPage
     /// </summary>
     private void displaySelection(SpreadsheetGrid grid)
     {
-        
         spreadsheetGrid.GetSelection(out int col, out int row); // gets positional data for selected column and row
         spreadsheetGrid.GetValue(col, row, out string value);   // gets value data for selected column and row
         
