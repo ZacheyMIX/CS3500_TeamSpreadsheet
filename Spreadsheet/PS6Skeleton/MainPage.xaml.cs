@@ -108,17 +108,11 @@ public partial class MainPage : ContentPage
     /// <summary>
     /// Entry for paths when saving
     /// </summary>
-    private async void PathChanged(Object sender, EventArgs e)
+    private void PathChanged(Object sender, EventArgs e)
     {
-        if (Regex.IsMatch(SavePath.Text, @"\.sprd$"))
-            path = SavePath.Text;
-        else
-        {
-            await DisplayAlert("Invalid Spreadsheet Name", "File " + SavePath.Text + " is not a valid .sprd file.", "OK");
-            SavePath.Text = "";
-        }
+        path = SavePath.Text;
     }
-
+    /*
     /// <summary>
     /// connects model and spreadsheetGrid to the current entry and cell input
     /// </summary>
@@ -129,8 +123,12 @@ public partial class MainPage : ContentPage
             HashSet<string> toBeUpdated = model.SetContentsOfCell(name, Contents.Text);
             SpreadsheetGridChanger(toBeUpdated);
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
-
+    */
     /// <summary>
     /// Standard "Save" functionality for spreadsheet programs.
     /// Should effectively save the current spreadsheet to a new file.
@@ -140,12 +138,22 @@ public partial class MainPage : ContentPage
         //FileResult fileResult = await FilePicker.Default.PickAsync();   // placeholder so the compiler doesn't throw a fit
         //path = 
         //model.Save(path);    // something like that goes here
-        if (path == "")
-            await DisplayAlert("No File Specified", "", "OK");
+        try
+        {
+            if (path == "")
+                await DisplayAlert("No File Specified", "", "OK");
 
-        else
-            model.Save(path);
-        
+            else if (!Regex.IsMatch(path, @"\.sprd$"))
+                await DisplayAlert("Invalid File Type", "Spreadsheet files must be the .sprd file type", "OK");
+
+            else
+                model.Save(path);
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error Saving File", "Error when saving file to path" + path + "\n" + ex.ToString(), "OK");
+            Console.WriteLine("\nError saving to " + path);
+        }
     }
 
     /// <summary>

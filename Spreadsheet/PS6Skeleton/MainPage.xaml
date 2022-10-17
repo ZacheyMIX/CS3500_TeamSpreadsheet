@@ -10,15 +10,17 @@
             <MenuFlyoutItem Text="New" Clicked="NewClicked"/>
             <MenuFlyoutItem Text="Open" Clicked="OpenClicked" />
             <MenuFlyoutItem Text="Save" Clicked="SaveClicked" />
-            <MenuFlyoutItem Text="Save As" Clicked="SaveAsClicked" />
         </MenuBarItem>
 
     </ContentPage.MenuBarItems>
     <Grid>
         <VerticalStackLayout>
-            <Label Text="Hello">
-                
-            </Label>
+            
+            <Entry x:Name="SavePath"
+                   Text="" 
+                   Completed="PathChanged" 
+                   FontSize="12"    />
+
             <SS:SpreadsheetGrid x:Name="spreadsheetGrid"/>
         </VerticalStackLayout>
         
