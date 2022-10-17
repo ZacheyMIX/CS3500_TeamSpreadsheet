@@ -143,18 +143,18 @@ public partial class MainPage : ContentPage
             {
                 await DisplayAlert("No File Specified", "", "OK");
             }
-            else if (Regex.IsMatch(SavePath.Text, @"^\.sprd$"))
+            try
+            {
+                model.Save(SavePath.Text);
+                await DisplayAlert("Successfully Saved File", "File saved to path: " + SavePath.Text, "OK");
+            }
+            catch
             {
                 SavePath.Text = execPath + SavePath.Text;
                 model.Save(SavePath.Text);
                 await DisplayAlert("Successfully Saved File", "File saved to path: " + SavePath.Text, "OK");
             }
-            else if (Regex.IsMatch(SavePath.Text, @"\.sprd$"))
-            {
-                model.Save(SavePath.Text);
-                await DisplayAlert("Successfully Saved File", "File saved to path: " + SavePath.Text, "OK");
-            }
-            else
+            finally
             {
                 await DisplayAlert("Invalid File Type", "Spreadsheet files must be the .sprd file type", "OK");
             }
