@@ -109,11 +109,6 @@ public partial class MainPage : ContentPage
         }
     }
 
-    private void ChangeCellsOnOpen()
-    {
-
-    }
-
     /// <summary>
     /// Standard "Save As" functionality for spreadsheet programs.
     /// Should effectively save the current spreadsheet to a new file.
