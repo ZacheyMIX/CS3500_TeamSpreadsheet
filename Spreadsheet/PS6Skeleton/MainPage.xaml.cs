@@ -1,4 +1,5 @@
-﻿using SS;
+﻿using Microsoft.Maui.Storage;
+using SS;
 using System.Data.Common;
 using System.Text.RegularExpressions;
 
@@ -77,13 +78,8 @@ public partial class MainPage : ContentPage
                     try
                     {
                         model = new(fileResult.FullPath, s => true, s => s, "ps6");
-                        foreach (string cellname in model.GetNamesOfAllNonemptyCells())  // is this getting too in the way of the model?
-                        {
-                            int letterIndex = char.ToUpper(cellname[0]) - 65;       // additional subtraction by 1 for indexing
-                            int numberIndex = int.Parse(cellname[1].ToString()) - 1;
-                            spreadsheetGrid.SetValue(letterIndex, numberIndex, model.GetCellValue(cellname).ToString());
-                            path = fileResult.FullPath;
-                        }
+                        SpreadsheetGridChanger(model.GetNamesOfAllNonemptyCells());
+                        path = fileResult.FullPath;
                     }
 
                     catch (Exception ex)
@@ -111,29 +107,59 @@ public partial class MainPage : ContentPage
     }
 
     /// <summary>
-    /// Standard "Save As" functionality for spreadsheet programs.
-    /// Should effectively save the current spreadsheet to a new file.
+    /// Entry for paths when saving
     /// </summary>
-    private async void SaveAsClicked(Object sender, EventArgs e)
+    private async void PathChanged(Object sender, EventArgs e)
     {
-        FileResult fileResult = await FilePicker.Default.PickAsync();   // placeholder so the compiler doesn't throw a fit
-        path = fileResult.FullPath;
+        if (Regex.IsMatch(SavePath.Text, @"\.sprd$"))
+            path = SavePath.Text;
+        else
+        {
+            await DisplayAlert("Invalid Spreadsheet Name", "File " + SavePath.Text + " is not a valid .sprd file.", "OK");
+            SavePath.Text = "";
+        }
+    }
+
+    /// <summary>
+    /// connects model and spreadsheetGrid to the current entry and cell input
+    /// </summary>
+    private async void ContentsChanged(Object sender, EventArgs e)
+    {
+        try
+        {
+            HashSet<string> toBeUpdated = model.SetContentsOfCell(name, Contents.Text);
+            SpreadsheetGridChanger(toBeUpdated);
+        }
     }
 
     /// <summary>
     /// Standard "Save" functionality for spreadsheet programs.
     /// Should effectively save the current spreadsheet to a new file.
     /// </summary>
-    private void SaveClicked(Object sender, EventArgs e)
+    private async void SaveClicked(Object sender, EventArgs e)
     {
         //FileResult fileResult = await FilePicker.Default.PickAsync();   // placeholder so the compiler doesn't throw a fit
         //path = 
         //model.Save(path);    // something like that goes here
         if (path == "")
-            SaveAsClicked(sender, e);
-        
+            await DisplayAlert("No File Specified", "", "OK");
+
         else
             model.Save(path);
         
+    }
+
+    /// <summary>
+    /// Universal changer for largescale alterations within the spreadsheet.
+    /// </summary>
+    /// <param name="set"> set of names of cells that need to be updated in the spreadsheet grid </param>
+    private void SpreadsheetGridChanger(IEnumerable<string> set)
+    {
+        foreach (string cellname in set)  // is this getting too in the way of the model?
+        {
+            int letterIndex = char.ToUpper(cellname[0]) - 65;       // additional subtraction by 1 for indexing
+            int numberIndex = int.Parse(cellname[1].ToString()) - 1;
+            spreadsheetGrid.SetValue(letterIndex, numberIndex, model.GetCellValue(cellname).ToString());
+        }
     }
 }
