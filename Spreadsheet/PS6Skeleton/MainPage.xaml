@@ -17,8 +17,7 @@
         <VerticalStackLayout>
             
             <Entry x:Name="SavePath"
-                   Text="" 
-                   Completed="PathChanged" 
+                   Text=""
                    FontSize="12"    />
 
             <SS:SpreadsheetGrid x:Name="spreadsheetGrid"/>

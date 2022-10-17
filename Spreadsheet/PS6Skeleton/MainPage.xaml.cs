@@ -15,7 +15,6 @@ public partial class MainPage : ContentPage
     /// internal Spreadsheet model class. Represents the logic of the spreadsheet.
     /// </summary>
     private Spreadsheet model;
-    private String path;
 
     /// <summary>
     /// Constructor for the demo
@@ -31,7 +30,7 @@ public partial class MainPage : ContentPage
         // register the displaySelection method below.
         spreadsheetGrid.SelectionChanged += displaySelection;
         spreadsheetGrid.SetSelection(2,3);
-        path = "";
+        SavePath.Text = "";
         model = new(s => true, s => s, "ps6");
     }
 
@@ -60,7 +59,7 @@ public partial class MainPage : ContentPage
         if (goAhead)
         {
             model = new(s => true, s => s, "ps6");              // MAKE SURE TO CHANGE ON RELEASES
-            path = "";
+            SavePath.Text = "";
         }
     }
 
@@ -85,7 +84,7 @@ public partial class MainPage : ContentPage
                     {
                         model = new(fileResult.FullPath, s => true, s => s, "ps6");
                         SpreadsheetGridChanger(model.GetNamesOfAllNonemptyCells());
-                        path = fileResult.FullPath;
+                        SavePath.Text = fileResult.FullPath;
                     }
 
                     catch (Exception ex)
@@ -110,14 +109,6 @@ public partial class MainPage : ContentPage
             Console.WriteLine("Error opening file:");
             Console.WriteLine(ex);
         }
-    }
-
-    /// <summary>
-    /// Entry for paths when saving
-    /// </summary>
-    private void PathChanged(Object sender, EventArgs e)
-    {
-        path = SavePath.Text;
     }
     /*
     /// <summary>
@@ -147,19 +138,31 @@ public partial class MainPage : ContentPage
         //model.Save(path);    // something like that goes here
         try
         {
-            if (path == "")
+            string execPath = AppDomain.CurrentDomain.BaseDirectory;
+            if (SavePath.Text == "")
+            {
                 await DisplayAlert("No File Specified", "", "OK");
-
-            else if (!Regex.IsMatch(path, @"\.sprd$"))
-                await DisplayAlert("Invalid File Type", "Spreadsheet files must be the .sprd file type", "OK");
-
+            }
+            else if (Regex.IsMatch(SavePath.Text, @"^\.sprd$"))
+            {
+                SavePath.Text = execPath + SavePath.Text;
+                model.Save(SavePath.Text);
+                await DisplayAlert("Successfully Saved File", "File saved to path: " + SavePath.Text, "OK");
+            }
+            else if (Regex.IsMatch(SavePath.Text, @"\.sprd$"))
+            {
+                model.Save(SavePath.Text);
+                await DisplayAlert("Successfully Saved File", "File saved to path: " + SavePath.Text, "OK");
+            }
             else
-                model.Save(path);
+            {
+                await DisplayAlert("Invalid File Type", "Spreadsheet files must be the .sprd file type", "OK");
+            }
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error Saving File", "Error when saving file to path " + path + "\n" + ex.ToString(), "OK");
-            System.Diagnostics.Debug.WriteLine("\nError saving to " + path);
+            await DisplayAlert("Error Saving File", "Error when saving file to path " + SavePath.Text + "\n" + ex.ToString(), "OK");
+            System.Diagnostics.Debug.WriteLine("\nError saving to " + SavePath.Text);
         }
     }
 
