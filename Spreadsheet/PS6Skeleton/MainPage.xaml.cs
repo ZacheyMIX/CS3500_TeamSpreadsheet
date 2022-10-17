@@ -31,7 +31,6 @@ public partial class MainPage : ContentPage
         spreadsheetGrid.SelectionChanged += displaySelection;
         spreadsheetGrid.SetSelection(2,3);
         path = "";
-        model = new(s => true, s => s, "ps6");
     }
 
     /// <summary>
@@ -56,8 +55,9 @@ public partial class MainPage : ContentPage
     }
 
     /// <summary>
-    /// Opens a .sprd file, changes model to that spreadsheet,
-    /// and prints the first 100 chars of that file to the console.
+    /// Opens any(!!!) file as text and prints its contents.
+    /// Note the use of async and await, concepts we will learn more about
+    /// later this semester.
     /// </summary>
     private async void OpenClicked(Object sender, EventArgs e)
         // if we wish to use this as 
@@ -81,7 +81,6 @@ public partial class MainPage : ContentPage
                             int letterIndex = char.ToUpper(cellname[0]) - 65;       // additional subtraction by 1 for indexing
                             int numberIndex = int.Parse(cellname[1].ToString()) - 1;
                             spreadsheetGrid.SetValue(letterIndex, numberIndex, model.GetCellValue(cellname).ToString());
-                            path = fileResult.FullPath;
                         }
                     }
 
@@ -116,23 +115,17 @@ public partial class MainPage : ContentPage
     private async void SaveAsClicked(Object sender, EventArgs e)
     {
         FileResult fileResult = await FilePicker.Default.PickAsync();   // placeholder so the compiler doesn't throw a fit
-        path = fileResult.FullPath;
+        //model.Save(fileResult.ToString());    // something like that goes here
     }
 
     /// <summary>
     /// Standard "Save" functionality for spreadsheet programs.
     /// Should effectively save the current spreadsheet to a new file.
     /// </summary>
-    private void SaveClicked(Object sender, EventArgs e)
+    private async void SaveClicked(Object sender, EventArgs e)
     {
-        //FileResult fileResult = await FilePicker.Default.PickAsync();   // placeholder so the compiler doesn't throw a fit
+        FileResult fileResult = await FilePicker.Default.PickAsync();   // placeholder so the compiler doesn't throw a fit
         //path = 
         //model.Save(path);    // something like that goes here
-        if (path == "")
-            SaveAsClicked(sender, e);
-        
-        else
-            model.Save(path);
-        
     }
 }
