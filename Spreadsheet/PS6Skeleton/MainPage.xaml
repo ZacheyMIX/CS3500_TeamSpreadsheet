@@ -10,13 +10,15 @@
             <MenuFlyoutItem Text="New" Clicked="NewClicked"/>
             <MenuFlyoutItem Text="Open" Clicked="OpenClicked" />
             <MenuFlyoutItem Text="Save" Clicked="SaveClicked" />
-            <MenuFlyoutItem Text="Save As" Clicked="SaveAsClicked" />
         </MenuBarItem>
-        <MenuBarItem
 
     </ContentPage.MenuBarItems>
     <Grid>
         <VerticalStackLayout>
+
+                    <Entry x:Name="SavePath"
+                   Text=""
+                   FontSize="12"    />
             <HorizontalStackLayout Margin="10">
                 <Label x:Name="CellName" Text=""  WidthRequest="100" VerticalOptions="CenterAndExpand" >
 
@@ -29,7 +31,8 @@
                 </Entry>
 
             </HorizontalStackLayout>
-            <SS:SpreadsheetGrid x:Name="spreadsheetGrid"/>
+            
+                    <SS:SpreadsheetGrid x:Name="spreadsheetGrid"/>
         </VerticalStackLayout>
         
     </Grid>

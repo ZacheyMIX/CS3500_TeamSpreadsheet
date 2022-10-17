@@ -1,4 +1,5 @@
-﻿using SS;
+﻿using Microsoft.Maui.Storage;
+using SS;
 using System.Data.Common;
 using System.Text.RegularExpressions;
 
@@ -14,7 +15,6 @@ public partial class MainPage : ContentPage
     /// internal Spreadsheet model class. Represents the logic of the spreadsheet.
     /// </summary>
     private Spreadsheet model;
-    private String path;
 
     /// <summary>
     /// Constructor for the demo
@@ -30,7 +30,8 @@ public partial class MainPage : ContentPage
         // register the displaySelection method below.
         spreadsheetGrid.SelectionChanged += displaySelection;
         spreadsheetGrid.SetSelection(2,3);
-        path = "";
+        SavePath.Text = "";
+        model = new(s => true, s => s, "ps6");
     }
 
     /// <summary>
@@ -47,20 +48,26 @@ public partial class MainPage : ContentPage
     /// <summary>
     /// Effectively creates a new spreadsheet by clearing all entries in the current SpreadsheetGrid.
     /// </summary>
-    private void NewClicked(Object sender, EventArgs e)
+    private async void NewClicked(Object sender, EventArgs e)
     {
         spreadsheetGrid.Clear();    // clears display
-        model = new(s => true, s => s, "ps6");              // MAKE SURE TO CHANGE ON RELEASES
-        path = "";
+        bool goAhead = true;
+        if (model.Changed)
+            goAhead = await DisplayAlert("Current Spreadsheet Not Saved",
+                "You are about to open a new spreadsheet without saving the previous one.",
+                "Continue", "Abort");
+        if (goAhead)
+        {
+            model = new(s => true, s => s, "ps6");              // MAKE SURE TO CHANGE ON RELEASES
+            SavePath.Text = "";
+        }
     }
 
     /// <summary>
-    /// Opens any(!!!) file as text and prints its contents.
-    /// Note the use of async and await, concepts we will learn more about
-    /// later this semester.
+    /// Opens a .sprd file, changes model to that spreadsheet,
+    /// and prints the first 100 chars of that file to the console.
     /// </summary>
     private async void OpenClicked(Object sender, EventArgs e)
-        // if we wish to use this as 
     {
         try
         {
@@ -76,12 +83,8 @@ public partial class MainPage : ContentPage
                     try
                     {
                         model = new(fileResult.FullPath, s => true, s => s, "ps6");
-                        foreach (string cellname in model.GetNamesOfAllNonemptyCells())  // is this getting too in the way of the model?
-                        {
-                            int letterIndex = char.ToUpper(cellname[0]) - 65;       // additional subtraction by 1 for indexing
-                            int numberIndex = int.Parse(cellname[1].ToString()) - 1;
-                            spreadsheetGrid.SetValue(letterIndex, numberIndex, model.GetCellValue(cellname).ToString());
-                        }
+                        SpreadsheetGridChanger(model.GetNamesOfAllNonemptyCells());
+                        SavePath.Text = fileResult.FullPath;
                     }
 
                     catch (Exception ex)
@@ -107,25 +110,73 @@ public partial class MainPage : ContentPage
             Console.WriteLine(ex);
         }
     }
-
+    /*
     /// <summary>
-    /// Standard "Save As" functionality for spreadsheet programs.
-    /// Should effectively save the current spreadsheet to a new file.
+    /// connects model and spreadsheetGrid to the current entry and cell input
     /// </summary>
-    private async void SaveAsClicked(Object sender, EventArgs e)
+    private async void ContentsChanged(Object sender, EventArgs e)
     {
-        FileResult fileResult = await FilePicker.Default.PickAsync();   // placeholder so the compiler doesn't throw a fit
-        //model.Save(fileResult.ToString());    // something like that goes here
+        try
+        {
+            HashSet<string> toBeUpdated = model.SetContentsOfCell(name, Contents.Text);
+            SpreadsheetGridChanger(toBeUpdated);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
-
+    */
     /// <summary>
     /// Standard "Save" functionality for spreadsheet programs.
     /// Should effectively save the current spreadsheet to a new file.
     /// </summary>
     private async void SaveClicked(Object sender, EventArgs e)
     {
-        FileResult fileResult = await FilePicker.Default.PickAsync();   // placeholder so the compiler doesn't throw a fit
+        //FileResult fileResult = await FilePicker.Default.PickAsync();   // placeholder so the compiler doesn't throw a fit
         //path = 
         //model.Save(path);    // something like that goes here
+        try
+        {
+            string execPath = AppDomain.CurrentDomain.BaseDirectory;
+            if (SavePath.Text == "")
+            {
+                await DisplayAlert("No File Specified", "", "OK");
+            }
+            else if (Regex.IsMatch(SavePath.Text, @"^\.sprd$"))
+            {
+                SavePath.Text = execPath + SavePath.Text;
+                model.Save(SavePath.Text);
+                await DisplayAlert("Successfully Saved File", "File saved to path: " + SavePath.Text, "OK");
+            }
+            else if (Regex.IsMatch(SavePath.Text, @"\.sprd$"))
+            {
+                model.Save(SavePath.Text);
+                await DisplayAlert("Successfully Saved File", "File saved to path: " + SavePath.Text, "OK");
+            }
+            else
+            {
+                await DisplayAlert("Invalid File Type", "Spreadsheet files must be the .sprd file type", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error Saving File", "Error when saving file to path " + SavePath.Text + "\n" + ex.ToString(), "OK");
+            System.Diagnostics.Debug.WriteLine("\nError saving to " + SavePath.Text);
+        }
+    }
+
+    /// <summary>
+    /// Universal changer for largescale alterations within the spreadsheet.
+    /// </summary>
+    /// <param name="set"> set of names of cells that need to be updated in the spreadsheet grid </param>
+    private void SpreadsheetGridChanger(IEnumerable<string> set)
+    {
+        foreach (string cellname in set)  // is this getting too in the way of the model?
+        {
+            int letterIndex = char.ToUpper(cellname[0]) - 65;       // additional subtraction by 1 for indexing
+            int numberIndex = int.Parse(cellname[1].ToString()) - 1;
+            spreadsheetGrid.SetValue(letterIndex, numberIndex, model.GetCellValue(cellname).ToString());
+        }
     }
 }
