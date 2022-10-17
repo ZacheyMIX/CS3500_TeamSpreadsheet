@@ -1,5 +1,6 @@
 ﻿using SS;
 using System.Data.Common;
+using System.Text.RegularExpressions;
 
 namespace SpreadsheetGUI;
 
@@ -13,6 +14,7 @@ public partial class MainPage : ContentPage
     /// internal Spreadsheet model class. Represents the logic of the spreadsheet.
     /// </summary>
     private Spreadsheet model;
+    private String path;
 
     /// <summary>
     /// Constructor for the demo
@@ -28,6 +30,7 @@ public partial class MainPage : ContentPage
         // register the displaySelection method below.
         spreadsheetGrid.SelectionChanged += displaySelection;
         spreadsheetGrid.SetSelection(2, 3);
+        path = "";
     }
 
     /// <summary>
@@ -39,12 +42,7 @@ public partial class MainPage : ContentPage
         
         spreadsheetGrid.GetSelection(out int col, out int row); // gets positional data for selected column and row
         spreadsheetGrid.GetValue(col, row, out string value);   // gets value data for selected column and row
-        if (value == "")
-        {
-            spreadsheetGrid.SetValue(col, row, DateTime.Now.ToLocalTime().ToString("T"));           // changes value of specified cell
-            spreadsheetGrid.GetValue(col, row, out value);      // same as before
-            DisplayAlert("Selection:", "column " + col + " row " + row + " value " + value, "OK");  // OS alerts. display box over the program
-        }
+        
     }
 
     /// <summary>
@@ -53,7 +51,8 @@ public partial class MainPage : ContentPage
     private void NewClicked(Object sender, EventArgs e)
     {
         spreadsheetGrid.Clear();    // clears display
-        model = new();              // MAKE SURE TO CHANGE ON RELEASES
+        model = new(s => true, s => s, "ps6");              // MAKE SURE TO CHANGE ON RELEASES
+        path = "";
     }
 
     /// <summary>
@@ -73,17 +72,46 @@ public partial class MainPage : ContentPage
 
                 string fileContents = File.ReadAllText(fileResult.FullPath);
                 Console.WriteLine("First 100 file chars:\n" + fileContents.Substring(0, 100));
+                if (Regex.IsMatch(fileResult.FullPath, @"\.sprd$"))
+                {
+                    try
+                    {
+                        model = new(fileResult.FullPath, s => true, s => s, "ps6");
+                        foreach (string cellname in model.GetNamesOfAllNonemptyCells())  // is this getting too in the way of the model?
+                        {
+                            int letterIndex = char.ToUpper(cellname[0]) - 65;       // additional subtraction by 1 for indexing
+                            int numberIndex = int.Parse(cellname[1].ToString()) - 1;
+                            spreadsheetGrid.SetValue(letterIndex, numberIndex, model.GetCellValue(cellname).ToString());
+                        }
+                    }
+
+                    catch (Exception ex)
+                    {
+                        await DisplayAlert("Error opening File", "While file is a .sprd, there was trouble parsing it." + ex.ToString(), "OK");
+                    }
+                }
+
+                else
+                {
+                    await DisplayAlert("Error opening File", "File " + fileResult.FullPath + " is not a valid .sprd file.", "OK");
+                }
             }
             else
             {
                 Console.WriteLine("No file selected.");
             }
+            
         }
         catch (Exception ex)
         {
             Console.WriteLine("Error opening file:");
             Console.WriteLine(ex);
         }
+    }
+
+    private void ChangeCellsOnOpen()
+    {
+
     }
 
     /// <summary>
@@ -103,6 +131,7 @@ public partial class MainPage : ContentPage
     private async void SaveClicked(Object sender, EventArgs e)
     {
         FileResult fileResult = await FilePicker.Default.PickAsync();   // placeholder so the compiler doesn't throw a fit
-        //model.Save(fileResult.ToString());    // something like that goes here
+        //path = 
+        //model.Save(path);    // something like that goes here
     }
 }
