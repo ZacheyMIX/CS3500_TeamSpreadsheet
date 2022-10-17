@@ -42,3 +42,9 @@ Dev notes and TODOs:
 - Reconsider "Save As" option in file management. Is this going to be the extra feature we're banking on?
 - Make sure to keep everything in xaml.cs related to the control in MVC; any extra data members or functions should be concise.
  This is more a note for myself than for you Zach, haha.
+
+# 10/17/22 - Ashton & Zach
+- Worked extensively on adding Save and opening features. Open front end works great, but Saves still have some work to be done.
+- Fix merge conflicts.
+- Still need to finish the Entries and Labels for each cell. Just needs some work put in, though.
+- Still deciding on whether or not paths need to be precise.
