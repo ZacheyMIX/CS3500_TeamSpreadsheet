@@ -49,11 +49,19 @@ public partial class MainPage : ContentPage
     /// <summary>
     /// Effectively creates a new spreadsheet by clearing all entries in the current SpreadsheetGrid.
     /// </summary>
-    private void NewClicked(Object sender, EventArgs e)
+    private async void NewClicked(Object sender, EventArgs e)
     {
         spreadsheetGrid.Clear();    // clears display
-        model = new(s => true, s => s, "ps6");              // MAKE SURE TO CHANGE ON RELEASES
-        path = "";
+        bool goAhead = true;
+        if (model.Changed)
+            goAhead = await DisplayAlert("Current Spreadsheet Not Saved",
+                "You are about to open a new spreadsheet without saving the previous one.",
+                "Continue", "Abort");
+        if (goAhead)
+        {
+            model = new(s => true, s => s, "ps6");              // MAKE SURE TO CHANGE ON RELEASES
+            path = "";
+        }
     }
 
     /// <summary>
@@ -61,7 +69,6 @@ public partial class MainPage : ContentPage
     /// and prints the first 100 chars of that file to the console.
     /// </summary>
     private async void OpenClicked(Object sender, EventArgs e)
-        // if we wish to use this as 
     {
         try
         {
@@ -151,8 +158,8 @@ public partial class MainPage : ContentPage
         }
         catch (Exception ex)
         {
-            await DisplayAlert("Error Saving File", "Error when saving file to path" + path + "\n" + ex.ToString(), "OK");
-            Console.WriteLine("\nError saving to " + path);
+            await DisplayAlert("Error Saving File", "Error when saving file to path " + path + "\n" + ex.ToString(), "OK");
+            System.Diagnostics.Debug.WriteLine("\nError saving to " + path);
         }
     }
 
