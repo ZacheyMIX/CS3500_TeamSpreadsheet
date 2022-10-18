@@ -138,25 +138,25 @@ public partial class MainPage : ContentPage
         //model.Save(path);    // something like that goes here
         try
         {
-            string execPath = AppDomain.CurrentDomain.BaseDirectory;
             if (SavePath.Text == "")
             {
                 await DisplayAlert("No File Specified", "", "OK");
             }
-            try
+            else if (!Regex.IsMatch(SavePath.Text, @"\.sprd$"))
             {
-                model.Save(SavePath.Text);
-                await DisplayAlert("Successfully Saved File", "File saved to path: " + SavePath.Text, "OK");
+                await DisplayAlert("Error Saving File", "File must be specified as a .sprd filetype", "OK");
             }
-            catch
+            else if (!Regex.IsMatch(SavePath.Text, @"^[A-Z]:\\"))
             {
+                string execPath = AppDomain.CurrentDomain.BaseDirectory;
                 SavePath.Text = execPath + SavePath.Text;
                 model.Save(SavePath.Text);
                 await DisplayAlert("Successfully Saved File", "File saved to path: " + SavePath.Text, "OK");
             }
-            finally
+            else
             {
-                await DisplayAlert("Invalid File Type", "Spreadsheet files must be the .sprd file type", "OK");
+                model.Save(SavePath.Text);
+                await DisplayAlert("Successfully Saved File", "File saved to path: " + SavePath.Text, "OK");
             }
         }
         catch (Exception ex)
