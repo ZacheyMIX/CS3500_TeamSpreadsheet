@@ -20,10 +20,10 @@
                    Text=""
                    FontSize="12"    />
             <HorizontalStackLayout Margin="10">
-                <Label x:Name="CellName" Text=""  WidthRequest="100" VerticalOptions="CenterAndExpand" >
+                <Label x:Name="CellName" Text="Cell Name"  WidthRequest="100" VerticalOptions="CenterAndExpand">
 
                 </Label>
-                <Label x:Name="CellValue"  Text="" WidthRequest="200" VerticalOptions="CenterAndExpand">
+                <Label x:Name="CellValue"  Text="Cell Value" WidthRequest="200" VerticalOptions="CenterAndExpand">
 
                 </Label>
                 <Entry x:Name="CellContent" Text="" WidthRequest="600">
