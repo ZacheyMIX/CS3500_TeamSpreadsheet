@@ -1,4 +1,5 @@
-﻿using Microsoft.Maui.Storage;
+﻿using Microsoft.Maui.Graphics;
+using Microsoft.Maui.Storage;
 using SS;
 using System.Data.Common;
 using System.Text.RegularExpressions;
@@ -32,6 +33,7 @@ public partial class MainPage : ContentPage
         spreadsheetGrid.SetSelection(2,3);
         SavePath.Text = "";
         model = new(s => true, s => s, "ps6");
+        displaySelection(spreadsheetGrid);
     }
 
     /// <summary>
@@ -42,7 +44,10 @@ public partial class MainPage : ContentPage
     {
         spreadsheetGrid.GetSelection(out int col, out int row); // gets positional data for selected column and row
         spreadsheetGrid.GetValue(col, row, out string value);   // gets value data for selected column and row
-        
+        char c = Convert.ToChar(col + 65);
+        CellName.Text = c.ToString() + (row+1).ToString();      // Displays the current selected cell name
+        CellValue.Text = value; //Displays the current celected cell value
+
     }
 
     /// <summary>
@@ -50,14 +55,16 @@ public partial class MainPage : ContentPage
     /// </summary>
     private async void NewClicked(Object sender, EventArgs e)
     {
-        spreadsheetGrid.Clear();    // clears display
         bool goAhead = true;
         if (model.Changed)
+        {
             goAhead = await DisplayAlert("Current Spreadsheet Not Saved",
                 "You are about to open a new spreadsheet without saving the previous one.",
                 "Continue", "Abort");
+        }
         if (goAhead)
         {
+            spreadsheetGrid.Clear();                            // clears display
             model = new(s => true, s => s, "ps6");              // MAKE SURE TO CHANGE ON RELEASES
             SavePath.Text = "";
         }
@@ -110,7 +117,7 @@ public partial class MainPage : ContentPage
             Console.WriteLine(ex);
         }
     }
-    /*
+    
     /// <summary>
     /// connects model and spreadsheetGrid to the current entry and cell input
     /// </summary>
@@ -118,15 +125,16 @@ public partial class MainPage : ContentPage
     {
         try
         {
-            HashSet<string> toBeUpdated = model.SetContentsOfCell(name, Contents.Text);
+            IList<string> toBeUpdated = model.SetContentsOfCell(CellName.Text, CellContent.Text);
             SpreadsheetGridChanger(toBeUpdated);
         }
-        catch (Exception ex)
+        catch
         {
-            Console.WriteLine(ex);
+            await DisplayAlert("Invalid Entry", CellName.Text + " was changed to an invalid entry.", "OK");
+            CellContent.Text = "";
         }
     }
-    */
+    
     /// <summary>
     /// Standard "Save" functionality for spreadsheet programs.
     /// Should effectively save the current spreadsheet to a new file.
@@ -138,25 +146,25 @@ public partial class MainPage : ContentPage
         //model.Save(path);    // something like that goes here
         try
         {
-            string execPath = AppDomain.CurrentDomain.BaseDirectory;
             if (SavePath.Text == "")
             {
                 await DisplayAlert("No File Specified", "", "OK");
             }
-            try
+            else if (!Regex.IsMatch(SavePath.Text, @"\.sprd$"))
             {
-                model.Save(SavePath.Text);
-                await DisplayAlert("Successfully Saved File", "File saved to path: " + SavePath.Text, "OK");
+                await DisplayAlert("Error Saving File", "File must be specified as a .sprd filetype", "OK");
             }
-            catch
+            else if (!Regex.IsMatch(SavePath.Text, @"^[A-Z]:\\"))
             {
+                string execPath = AppDomain.CurrentDomain.BaseDirectory;
                 SavePath.Text = execPath + SavePath.Text;
                 model.Save(SavePath.Text);
                 await DisplayAlert("Successfully Saved File", "File saved to path: " + SavePath.Text, "OK");
             }
-            finally
+            else
             {
-                await DisplayAlert("Invalid File Type", "Spreadsheet files must be the .sprd file type", "OK");
+                model.Save(SavePath.Text);
+                await DisplayAlert("Successfully Saved File", "File saved to path: " + SavePath.Text, "OK");
             }
         }
         catch (Exception ex)
