@@ -15,12 +15,24 @@
     </ContentPage.MenuBarItems>
     <Grid>
         <VerticalStackLayout>
-            
-            <Entry x:Name="SavePath"
+
+                    <Entry x:Name="SavePath"
                    Text=""
                    FontSize="12"    />
+            <HorizontalStackLayout Margin="10">
+                <Label x:Name="CellName" Text=""  WidthRequest="100" VerticalOptions="CenterAndExpand" >
 
-            <SS:SpreadsheetGrid x:Name="spreadsheetGrid"/>
+                </Label>
+                <Label x:Name="CellValue"  Text="" WidthRequest="200" VerticalOptions="CenterAndExpand">
+
+                </Label>
+                <Entry x:Name="CellContent" Text="" WidthRequest="600">
+
+                </Entry>
+
+            </HorizontalStackLayout>
+            
+                    <SS:SpreadsheetGrid x:Name="spreadsheetGrid"/>
         </VerticalStackLayout>
         
     </Grid>
