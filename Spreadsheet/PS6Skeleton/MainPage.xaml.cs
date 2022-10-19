@@ -44,6 +44,7 @@ public partial class MainPage : ContentPage
         spreadsheetGrid.GetSelection(out int col, out int row); // gets positional data for selected column and row
         spreadsheetGrid.GetValue(col, row, out string value);   // gets value data for selected column and row
         char c = Convert.ToChar(col);
+        System.Diagnostics.Debug.WriteLine(c);
         CellName.Text = c.ToString() + (row+1).ToString();      // figure this out
         CellValue.Text = value;
     }
@@ -79,10 +80,10 @@ public partial class MainPage : ContentPage
             FileResult fileResult = await FilePicker.Default.PickAsync();
             if (fileResult != null)
             {
-                Console.WriteLine("Successfully chose file: " + fileResult.FileName);
+                System.Diagnostics.Debug.WriteLine("Successfully chose file: " + fileResult.FileName);
 
                 string fileContents = File.ReadAllText(fileResult.FullPath);
-                Console.WriteLine("First 100 file chars:\n" + fileContents.Substring(0, 100));
+                System.Diagnostics.Debug.WriteLine("First 100 file chars:\n" + fileContents.Substring(0, 100));
                 if (Regex.IsMatch(fileResult.FullPath, @"\.sprd$"))
                 {
                     try
@@ -105,14 +106,14 @@ public partial class MainPage : ContentPage
             }
             else
             {
-                Console.WriteLine("No file selected.");
+                System.Diagnostics.Debug.WriteLine("No file selected.");
             }
             
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Error opening file:");
-            Console.WriteLine(ex);
+            System.Diagnostics.Debug.WriteLine("Error opening file:");
+            System.Diagnostics.Debug.WriteLine(ex);
         }
     }
     
