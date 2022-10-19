@@ -1,5 +1,6 @@
 ﻿using Microsoft.Maui.Graphics;
 using Microsoft.Maui.Storage;
+using SpreadsheetUtilities;
 using SS;
 using System.Data.Common;
 using System.Text.RegularExpressions;
@@ -44,10 +45,13 @@ public partial class MainPage : ContentPage
     {
         spreadsheetGrid.GetSelection(out int col, out int row); // gets positional data for selected column and row
         spreadsheetGrid.GetValue(col, row, out string value);   // gets value data for selected column and row
-        char c = Convert.ToChar(col);
+        char c = Convert.ToChar(col + 65);
         System.Diagnostics.Debug.WriteLine(c);
-        CellName.Text = c.ToString() + (row+1).ToString();      // figure this out
+        CellName.Text = c.ToString() + (row+1).ToString();
         CellValue.Text = value;
+
+        if (CellValue.Text != "")
+            CellContent.Text = model.GetCellContents(CellName.Text).ToString();
     }
 
     /// <summary>
@@ -133,6 +137,7 @@ public partial class MainPage : ContentPage
             await DisplayAlert("Invalid Entry", CellName.Text + " was changed to an invalid entry.", "OK");
             CellContent.Text = "";
         }
+        displaySelection(spreadsheetGrid);
     }
     
     /// <summary>
@@ -184,7 +189,17 @@ public partial class MainPage : ContentPage
         {
             int letterIndex = char.ToUpper(cellname[0]) - 65;       // additional subtraction by 1 for indexing
             int numberIndex = int.Parse(cellname[1].ToString()) - 1;
-            spreadsheetGrid.SetValue(letterIndex, numberIndex, model.GetCellValue(cellname).ToString());
+            var value = model.GetCellValue(cellname);
+
+            if (value is not FormulaError)  // otherwise this displays as a SpreadsheetUtilities.FormulaError and that's uggy
+                spreadsheetGrid.SetValue(letterIndex, numberIndex, model.GetCellValue(cellname).ToString());
+            else
+                spreadsheetGrid.SetValue(letterIndex, numberIndex, "FormErr");
+            // possibly change string interpretation for FormulaErrors
+
+
+            // put something here to accomodate for floating point shenanigans
+            // e.g. "2.0000000000020E-19" as a string leaves both the Contents entry and the cell box
         }
     }
 }
