@@ -5,40 +5,44 @@
              x:Class="SpreadsheetGUI.MainPage">
     <!--Comment-->
 
-    <ContentPage.MenuBarItems>
-        <MenuBarItem Text="File">
-            <MenuFlyoutItem Text="New" Clicked="NewClicked"/>
-            <MenuFlyoutItem Text="Open" Clicked="OpenClicked" />
-            <MenuFlyoutItem Text="Save" Clicked="SaveClicked" />
-        </MenuBarItem>
 
-    </ContentPage.MenuBarItems>
-    <Grid>
-        <VerticalStackLayout>
+        <ContentPage.MenuBarItems>
+            <MenuBarItem Text="File">
+                <MenuFlyoutItem Text="New" Clicked="NewClicked"/>
+                <MenuFlyoutItem Text="Open" Clicked="OpenClicked" />
+                <MenuFlyoutItem Text="Save" Clicked="SaveClicked" />
+            </MenuBarItem>
+        </ContentPage.MenuBarItems>
 
-           <Entry x:Name="SavePath"
+    <Grid RowDefinitions="40, 40, *">
+        <Entry x:Name="SavePath"
                    Text=""
-                   FontSize="12"    />
-            
-            <HorizontalStackLayout Margin="10">
-                <Label x:Name="CellName"
-                       Text=""  WidthRequest="100"
-                       VerticalOptions="CenterAndExpand" />
-
-
-                <Label x:Name="CellValue"
-                       Text="" WidthRequest="200" 
-                       VerticalOptions="CenterAndExpand" />
-
-
-                <Entry x:Name="CellContent" 
-                       Text="" WidthRequest="600"       
-                       Completed="ContentsChanged"      />
-            </HorizontalStackLayout>
-            
-                    <SS:SpreadsheetGrid x:Name="spreadsheetGrid"/>
-        </VerticalStackLayout>
+                   FontSize="12"
+                   Grid.Row="0"/>
         
+        <Label x:Name="CellName"
+                       Text=""  WidthRequest="100"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Start"
+                       Grid.Row="1"/>
+
+
+        <Label x:Name="CellValue"
+                   Text="" WidthRequest="200" 
+                   VerticalOptions="Center" 
+                   HorizontalOptions="Center"
+                   Grid.Row="1"/>
+
+
+        <Entry x:Name="CellContent" 
+                       Text="" WidthRequest="600"       
+                       Completed="ContentsChanged" 
+                       HorizontalOptions="End"
+                   Grid.Row="1"/>
+
+        <SS:SpreadsheetGrid x:Name="spreadsheetGrid" Grid.Row="2"/>
+
     </Grid>
+    
 </ContentPage>
 
