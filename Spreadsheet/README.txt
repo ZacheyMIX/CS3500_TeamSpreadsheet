@@ -48,3 +48,10 @@ Dev notes and TODOs:
 - Fix merge conflicts.
 - Still need to finish the Entries and Labels for each cell. Just needs some work put in, though.
 - Still deciding on whether or not paths need to be precise.
+
+# 10/18/22
+- Today was done mostly disjoint, although we continued communication over Discord messages.
+- Mainly we accomplished content entry and value changing.
+- We need to find out whether or not we agree with the current approach for getting previous contents;
+e.g. should we enforce the entry box being blank before clicking on a different cell,
+or should the contents ALWAYS change depending on the cell?
