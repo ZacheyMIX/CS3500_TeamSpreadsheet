@@ -23,14 +23,13 @@
         
         <Label x:Name="CellName"
                Text=""  
-               WidthRequest="100"
                VerticalOptions="Center"
                HorizontalOptions="Start"
                Grid.Row="1"/>
 
 
         <Label x:Name="CellValue"
-               Text="" WidthRequest="200" 
+               Text="" 
                VerticalOptions="Center" 
                HorizontalOptions="Center"
                Grid.Row="1"/>

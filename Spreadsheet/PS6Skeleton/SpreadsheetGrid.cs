@@ -64,7 +64,7 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         graphicsView.Drawable = this;
         graphicsView.HeightRequest = LABEL_ROW_HEIGHT + (ROW_COUNT + 1) * DATA_ROW_HEIGHT;
         graphicsView.WidthRequest = LABEL_COL_WIDTH + (COL_COUNT + 1) * DATA_COL_WIDTH;
-        graphicsView.BackgroundColor = Colors.LightGrey;
+        graphicsView.BackgroundColor = Colors.LightGray;
         graphicsView.EndInteraction += OnEndInteraction;
         this.Content = graphicsView;
         this.Scrolled += OnScrolled;
@@ -295,11 +295,12 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         // Highlight the selection, if it is visible
         if ((_selectedCol - _firstColumn >= 0) && (_selectedRow - _firstRow >= 0))
         {
-            canvas.DrawRectangle(
-                LABEL_COL_WIDTH + (_selectedCol - _firstColumn) * DATA_COL_WIDTH + 1,
+            canvas.FillColor = Colors.Yellow;
+            canvas.FillRectangle(LABEL_COL_WIDTH + (_selectedCol - _firstColumn) * DATA_COL_WIDTH + 1,
                               LABEL_ROW_HEIGHT + (_selectedRow - _firstRow) * DATA_ROW_HEIGHT + 1,
                               DATA_COL_WIDTH - 2,
                               DATA_ROW_HEIGHT - 2);
+            
         }
 
         // Draw the text
