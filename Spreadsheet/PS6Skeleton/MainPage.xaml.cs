@@ -161,7 +161,7 @@ public partial class MainPage : ContentPage
             {
                 await DisplayAlert("Error Saving File", "File must be specified as a .sprd filetype", "OK");
             }
-            else if (!Regex.IsMatch(SavePath.Text, @"^[A-Z]:\\"))
+            else if (!Regex.IsMatch(SavePath.Text, @"^[A-Z]:\\") || !Regex.IsMatch(SavePath.Text, @"^/"))
             {
                 string execPath = AppDomain.CurrentDomain.BaseDirectory;
                 SavePath.Text = execPath + SavePath.Text;
