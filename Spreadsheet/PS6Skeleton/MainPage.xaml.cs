@@ -192,14 +192,26 @@ public partial class MainPage : ContentPage
             var value = model.GetCellValue(cellname);
 
             if (value is not FormulaError)  // otherwise this displays as a SpreadsheetUtilities.FormulaError and that's uggy
-                spreadsheetGrid.SetValue(letterIndex, numberIndex, model.GetCellValue(cellname).ToString());
+            {
+                string input = model.GetCellValue(cellname).ToString();
+                if (input.Length > 7)
+                {
+                    if (input.Contains("E"))
+                    {
+                        string firstHalf = input.Substring(0, 3);
+                        string secondHalf = input.Split("E")[1];
+                        spreadsheetGrid.SetValue(letterIndex, numberIndex, firstHalf + "E" + secondHalf);
+                    }
+                    else
+                        spreadsheetGrid.SetValue(letterIndex, numberIndex, input.Substring(0, 7));
+                }
+                else
+                    spreadsheetGrid.SetValue(letterIndex, numberIndex, input);
+            }
             else
                 spreadsheetGrid.SetValue(letterIndex, numberIndex, "FormErr");
             // possibly change string interpretation for FormulaErrors
 
-
-            // put something here to accomodate for floating point shenanigans
-            // e.g. "2.0000000000020E-19" as a string leaves both the Contents entry and the cell box
         }
     }
 }
