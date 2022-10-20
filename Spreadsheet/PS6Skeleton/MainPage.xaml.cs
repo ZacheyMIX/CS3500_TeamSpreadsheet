@@ -155,9 +155,6 @@ public partial class MainPage : ContentPage
     /// </summary>
     private async void SaveClicked(Object sender, EventArgs e)
     {
-        //FileResult fileResult = await FilePicker.Default.PickAsync();   // placeholder so the compiler doesn't throw a fit
-        //path = 
-        //model.Save(path);    // something like that goes here
         try
         {
             if (SavePath.Text == "")
@@ -208,7 +205,7 @@ public partial class MainPage : ContentPage
     /// <param name="set"> set of names of cells that need to be updated in the spreadsheet grid </param>
     private void SpreadsheetGridChanger(IEnumerable<string> set)
     {
-        foreach (string cellname in set)  // is this getting too in the way of the model?
+        foreach (string cellname in set)
         {
             int letterIndex = char.ToUpper(cellname[0]) - 65;       // additional subtraction by 1 for indexing
             int numberIndex = int.Parse(cellname[1].ToString()) - 1;
@@ -233,7 +230,6 @@ public partial class MainPage : ContentPage
             }
             else
                 spreadsheetGrid.SetValue(letterIndex, numberIndex, "FormErr");
-            // possibly change string interpretation for FormulaErrors
 
         }
     }
