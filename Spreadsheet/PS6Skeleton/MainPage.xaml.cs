@@ -2,6 +2,7 @@
 using Microsoft.Maui.Storage;
 using SpreadsheetUtilities;
 using SS;
+using System;
 using System.Data.Common;
 using System.Text.RegularExpressions;
 
@@ -17,6 +18,11 @@ public partial class MainPage : ContentPage
     /// internal Spreadsheet model class. Represents the logic of the spreadsheet.
     /// </summary>
     private Spreadsheet model;
+
+    /// <summary>
+    /// used for when saving spreadsheet as to display warnings if a different spreadsheet would be overridden
+    /// </summary>
+    private string mostRecentSavePath;
 
     /// <summary>
     /// Constructor for the demo
@@ -35,6 +41,7 @@ public partial class MainPage : ContentPage
         SavePath.Text = "";
         model = new(s => true, s => s, "ps6");
         displaySelection(spreadsheetGrid);
+        mostRecentSavePath = "";
     }
 
     /// <summary>
@@ -148,9 +155,6 @@ public partial class MainPage : ContentPage
     /// </summary>
     private async void SaveClicked(Object sender, EventArgs e)
     {
-        //FileResult fileResult = await FilePicker.Default.PickAsync();   // placeholder so the compiler doesn't throw a fit
-        //path = 
-        //model.Save(path);    // something like that goes here
         try
         {
             if (SavePath.Text == "")
@@ -163,6 +167,13 @@ public partial class MainPage : ContentPage
             }
             else if (!Regex.IsMatch(SavePath.Text, @"^[A-Z]:\\") || !Regex.IsMatch(SavePath.Text, @"^/"))
             {
+                if (SavePath.Text != mostRecentSavePath && mostRecentSavePath != "")
+                {
+                    if (!(await DisplayAlert("Possible Spreadsheet Override",
+                        "The file you're about to save might override a different spreadsheet. Save anyway?",
+                        "Yes", "No")))
+                        return;
+                }
                 string execPath = AppDomain.CurrentDomain.BaseDirectory;
                 SavePath.Text = execPath + SavePath.Text;
                 model.Save(SavePath.Text);
@@ -170,6 +181,13 @@ public partial class MainPage : ContentPage
             }
             else
             {
+                if (SavePath.Text != mostRecentSavePath && mostRecentSavePath != "")
+                {
+                    if (!(await DisplayAlert("Possible Spreadsheet Override",
+                        "The file you're about to save might override a different spreadsheet. Save anyway?",
+                        "Yes", "No")))
+                        return;
+                }
                 model.Save(SavePath.Text);
                 await DisplayAlert("Successfully Saved File", "File saved to path: " + SavePath.Text, "OK");
             }
@@ -187,7 +205,7 @@ public partial class MainPage : ContentPage
     /// <param name="set"> set of names of cells that need to be updated in the spreadsheet grid </param>
     private void SpreadsheetGridChanger(IEnumerable<string> set)
     {
-        foreach (string cellname in set)  // is this getting too in the way of the model?
+        foreach (string cellname in set)
         {
             int letterIndex = char.ToUpper(cellname[0]) - 65;       // additional subtraction by 1 for indexing
             int numberIndex = int.Parse(cellname[1].ToString()) - 1;
@@ -212,7 +230,6 @@ public partial class MainPage : ContentPage
             }
             else
                 spreadsheetGrid.SetValue(letterIndex, numberIndex, "FormErr");
-            // possibly change string interpretation for FormulaErrors
 
         }
     }
