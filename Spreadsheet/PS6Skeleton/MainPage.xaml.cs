@@ -2,6 +2,7 @@
 using Microsoft.Maui.Storage;
 using SpreadsheetUtilities;
 using SS;
+using System;
 using System.Data.Common;
 using System.Text.RegularExpressions;
 
@@ -17,6 +18,11 @@ public partial class MainPage : ContentPage
     /// internal Spreadsheet model class. Represents the logic of the spreadsheet.
     /// </summary>
     private Spreadsheet model;
+
+    /// <summary>
+    /// used for when saving spreadsheet as to display warnings if a different spreadsheet would be overridden
+    /// </summary>
+    private string mostRecentSavePath;
 
     /// <summary>
     /// Constructor for the demo
@@ -35,6 +41,7 @@ public partial class MainPage : ContentPage
         SavePath.Text = "";
         model = new(s => true, s => s, "ps6");
         displaySelection(spreadsheetGrid);
+        mostRecentSavePath = "";
     }
 
     /// <summary>
@@ -163,6 +170,13 @@ public partial class MainPage : ContentPage
             }
             else if (!Regex.IsMatch(SavePath.Text, @"^[A-Z]:\\") || !Regex.IsMatch(SavePath.Text, @"^/"))
             {
+                if (SavePath.Text != mostRecentSavePath && mostRecentSavePath != "")
+                {
+                    if (!(await DisplayAlert("Possible Spreadsheet Override",
+                        "The file you're about to save might override a different spreadsheet. Save anyway?",
+                        "Yes", "No")))
+                        return;
+                }
                 string execPath = AppDomain.CurrentDomain.BaseDirectory;
                 SavePath.Text = execPath + SavePath.Text;
                 model.Save(SavePath.Text);
@@ -170,6 +184,13 @@ public partial class MainPage : ContentPage
             }
             else
             {
+                if (SavePath.Text != mostRecentSavePath && mostRecentSavePath != "")
+                {
+                    if (!(await DisplayAlert("Possible Spreadsheet Override",
+                        "The file you're about to save might override a different spreadsheet. Save anyway?",
+                        "Yes", "No")))
+                        return;
+                }
                 model.Save(SavePath.Text);
                 await DisplayAlert("Successfully Saved File", "File saved to path: " + SavePath.Text, "OK");
             }
