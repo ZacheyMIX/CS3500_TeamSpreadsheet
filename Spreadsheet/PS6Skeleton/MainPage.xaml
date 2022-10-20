@@ -3,10 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:SS="clr-namespace:SS"
              x:Class="SpreadsheetGUI.MainPage">
-    <!--Comment-->
 
 
-        <ContentPage.MenuBarItems>
+    <ContentPage.MenuBarItems>
             <MenuBarItem Text="File">
                 <MenuFlyoutItem Text="New" Clicked="NewClicked"/>
                 <MenuFlyoutItem Text="Open" Clicked="OpenClicked" />
@@ -14,33 +13,36 @@
             </MenuBarItem>
         </ContentPage.MenuBarItems>
 
-    <Grid RowDefinitions="40, 40, *">
+    <Grid RowDefinitions="40, 40, 40, *">
         <Entry x:Name="SavePath"
-                   Text=""
-                   FontSize="12"
-                   Grid.Row="0"/>
+               Text=""
+               Placeholder="Save Path"
+               VerticalTextAlignment="Center"
+               FontSize="12"
+               Grid.Row="0"/>
         
         <Label x:Name="CellName"
-                       Text=""  WidthRequest="100"
-                       VerticalOptions="Center"
-                       HorizontalOptions="Start"
-                       Grid.Row="1"/>
+               Text=""  
+               WidthRequest="100"
+               VerticalOptions="Center"
+               HorizontalOptions="Start"
+               Grid.Row="1"/>
 
 
         <Label x:Name="CellValue"
-                   Text="" WidthRequest="200" 
-                   VerticalOptions="Center" 
-                   HorizontalOptions="Center"
-                   Grid.Row="1"/>
+               Text="" WidthRequest="200" 
+               VerticalOptions="Center" 
+               HorizontalOptions="Center"
+               Grid.Row="1"/>
 
 
         <Entry x:Name="CellContent" 
-                       Text="" WidthRequest="600"       
-                       Completed="ContentsChanged" 
-                       HorizontalOptions="End"
-                   Grid.Row="1"/>
+               Text=""
+               Placeholder="Cell Content"
+               Completed="ContentsChanged" 
+               Grid.Row="2"/>
 
-        <SS:SpreadsheetGrid x:Name="spreadsheetGrid" Grid.Row="2"/>
+        <SS:SpreadsheetGrid x:Name="spreadsheetGrid" Grid.Row="3"/>
 
     </Grid>
     
