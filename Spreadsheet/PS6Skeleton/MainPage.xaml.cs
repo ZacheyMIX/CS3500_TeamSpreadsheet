@@ -95,9 +95,19 @@ public partial class MainPage : ContentPage
             if (fileResult != null)
             {
                 System.Diagnostics.Debug.WriteLine("Successfully chose file: " + fileResult.FileName);
-
                 string fileContents = File.ReadAllText(fileResult.FullPath);
-                System.Diagnostics.Debug.WriteLine("First 100 file chars:\n" + fileContents.Substring(0, 100));
+                try
+                {
+                    System.Diagnostics.Debug.WriteLine("First 100 file chars:\n" + fileContents.Substring(0, 100));
+                }
+                catch
+                {
+                    model = new(s => true, s => s, "ps6");
+                    SpreadsheetGridChanger(model.GetNamesOfAllNonemptyCells());
+                    SavePath.Text = fileResult.FullPath;
+                    mostRecentSavePath = fileResult.FullPath;
+                    return;
+                }
                 if (Regex.IsMatch(fileResult.FullPath, @"\.sprd$"))
                 {
                     try
@@ -105,6 +115,7 @@ public partial class MainPage : ContentPage
                         model = new(fileResult.FullPath, s => true, s => s, "ps6");
                         SpreadsheetGridChanger(model.GetNamesOfAllNonemptyCells());
                         SavePath.Text = fileResult.FullPath;
+                        mostRecentSavePath = fileResult.FullPath;
                     }
 
                     catch (Exception ex)
@@ -165,7 +176,7 @@ public partial class MainPage : ContentPage
             {
                 await DisplayAlert("Error Saving File", "File must be specified as a .sprd filetype", "OK");
             }
-            else if (!Regex.IsMatch(SavePath.Text, @"^[A-Z]:\\") || !Regex.IsMatch(SavePath.Text, @"^/"))
+            else if (!Regex.IsMatch(SavePath.Text, @"^[A-Z]:\\") && !Regex.IsMatch(SavePath.Text, @"^/"))
             {
                 if (SavePath.Text != mostRecentSavePath && mostRecentSavePath != "")
                 {
@@ -178,6 +189,7 @@ public partial class MainPage : ContentPage
                 SavePath.Text = execPath + SavePath.Text;
                 model.Save(SavePath.Text);
                 await DisplayAlert("Successfully Saved File", "File saved to path: " + SavePath.Text, "OK");
+                mostRecentSavePath = SavePath.Text;
             }
             else
             {
@@ -190,6 +202,7 @@ public partial class MainPage : ContentPage
                 }
                 model.Save(SavePath.Text);
                 await DisplayAlert("Successfully Saved File", "File saved to path: " + SavePath.Text, "OK");
+                mostRecentSavePath = SavePath.Text;
             }
         }
         catch (Exception ex)
