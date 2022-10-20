@@ -52,6 +52,8 @@ public partial class MainPage : ContentPage
 
         if (CellValue.Text != "")
             CellContent.Text = model.GetCellContents(CellName.Text).ToString();
+        else
+            CellContent.Text = "";
     }
 
     /// <summary>
