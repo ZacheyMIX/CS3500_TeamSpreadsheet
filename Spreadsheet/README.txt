@@ -56,3 +56,8 @@ Dev notes and TODOs:
 e.g. should we enforce the entry box being blank before clicking on a different cell,
 or should the contents ALWAYS change depending on the cell?
 
+# 10/20/22
+- Help menu added.
+- Still have yet to narrow down special feature.
+- Bug discovered regarding deleting cells. Contents don't change to be blank when leaving the entry cell blank.
+
