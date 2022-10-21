@@ -20,6 +20,9 @@
     },
     "C1": {
       "stringForm": "=B1+B2"
+    },
+    "C2": {
+      "stringForm": "32"
     }
   },
   "Version": "ps6"

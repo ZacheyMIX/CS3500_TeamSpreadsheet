@@ -299,7 +299,6 @@ public class SpreadsheetGrid : ScrollView, IDrawable
             float x = LABEL_COL_WIDTH + (_selectedCol - _firstColumn) * DATA_COL_WIDTH + 1;
             float y = LABEL_ROW_HEIGHT + (_selectedRow - _firstRow) * DATA_ROW_HEIGHT + 1;
             float oddEven = (y - 11) / 20;
-            System.Diagnostics.Debug.WriteLine(oddEven);
             if(oddEven % 2 == 0)
             {
                 canvas.FillColor = Colors.Yellow;

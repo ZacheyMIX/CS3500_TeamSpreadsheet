@@ -53,7 +53,6 @@ public partial class MainPage : ContentPage
         spreadsheetGrid.GetSelection(out int col, out int row); // gets positional data for selected column and row
         spreadsheetGrid.GetValue(col, row, out string value);   // gets value data for selected column and row
         char c = Convert.ToChar(col + 65);
-        System.Diagnostics.Debug.WriteLine(c);
         CellName.Text = c.ToString() + (row+1).ToString();
         CellValue.Text = value;
 
@@ -147,6 +146,7 @@ public partial class MainPage : ContentPage
     /// </summary>
     private async void ContentsChanged(Object sender, EventArgs e)
     {
+        System.Diagnostics.Debug.WriteLine(CellContent.Text);
         try
         {
             IList<string> toBeUpdated = model.SetContentsOfCell(CellName.Text, CellContent.Text);
@@ -243,7 +243,6 @@ public partial class MainPage : ContentPage
             }
             else
                 spreadsheetGrid.SetValue(letterIndex, numberIndex, "FormErr");
-
         }
     }
 }
