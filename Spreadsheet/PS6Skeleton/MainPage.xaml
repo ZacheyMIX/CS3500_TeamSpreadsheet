@@ -10,7 +10,8 @@
                 <MenuFlyoutItem Text="New" Clicked="NewClicked"/>
                 <MenuFlyoutItem Text="Open" Clicked="OpenClicked" />
                 <MenuFlyoutItem Text="Save" Clicked="SaveClicked" />
-            </MenuBarItem>
+                <MenuFlyoutItem Text="Current Filepath" Clicked="RefreshFilepath"/>
+        </MenuBarItem>
         
         
             <MenuBarItem Text="Help">

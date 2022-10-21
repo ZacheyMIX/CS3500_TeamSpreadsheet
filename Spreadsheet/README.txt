@@ -58,6 +58,6 @@ or should the contents ALWAYS change depending on the cell?
 
 # 10/20/22
 - Help menu added.
-- Still have yet to narrow down special feature.
+- Still have yet to narrow down special feature. Current Filepath feature added, but this is more of a roundabout solution.
 - Bug discovered regarding deleting cells. Contents don't change to be blank when leaving the entry cell blank.
 

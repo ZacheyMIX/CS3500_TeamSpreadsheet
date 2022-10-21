@@ -247,6 +247,11 @@ public partial class MainPage : ContentPage
         }
     }
 
+    private void RefreshFilepath(Object sender, EventArgs e)
+    {
+        SavePath.Text = mostRecentSavePath;
+    }
+
     // HELP MENU POPUPS
 
     /// <summary>
@@ -257,7 +262,9 @@ public partial class MainPage : ContentPage
         await DisplayAlert("Saving Files Help", "When saving files, your two main options are specifying a full filepath or" +
             " saving to the same directory your executable is stored. Whenever specifying the full filepath, the file is of course saved there," +
             " otherwise the filepath is left blank (aside from the name of the spreadsheet) and saved to your executable's directory." +
-            " Keep in mind, too, that all spreadsheet filetypes must be .sprd when saving, or else the save will not be executed.", "OK");
+            " Keep in mind, too, that all spreadsheet filetypes must be .sprd when saving, or else the save will not be executed." +
+            "\nIf, for some reason, you've forgotten the path to the file you're currently working on, and your filepath entry has changed," +
+            " click on the Current Filepath button under the File menu.", "OK");
     }
 
     /// <summary>
