@@ -33,6 +33,12 @@ POSSIBLE ERRORS AND WARNINGS:
   and overriding a different spreadsheet file by saving the current file to the other file.
   Note that fatal or likewise hairy errors may result in data loss.
 
+
+EXTRA FEATURES:
+- Cell highlighting. Whatever cell you're selected will be highlighted either yellow or blue, depending on whether the cell is even or odd.
+- Refreshing current filepath feature.
+  If you lose the current filepath of your spreadsheet for whatever reason, click on the Current Filepath button under the File menu.
+
 THE ABOVE ENTRIES, ALTHOUGH SUBJECT TO CHANGE, ARE CONSIDERED FUNDAMENTAL TO THE PROJECT
 WRITTEN FIRST ON 10/15/22.
 ----------------------------------------------------------------------------------------
@@ -58,6 +64,8 @@ or should the contents ALWAYS change depending on the cell?
 
 # 10/20/22
 - Help menu added.
-- Still have yet to narrow down special feature. Current Filepath feature added, but this is more of a roundabout solution.
+- Still have yet to narrow down special feature. Current Filepath feature added.
 - Bug discovered regarding deleting cells. Contents don't change to be blank when leaving the entry cell blank.
 
+# 10/21/22
+ - Submitted assignment.
