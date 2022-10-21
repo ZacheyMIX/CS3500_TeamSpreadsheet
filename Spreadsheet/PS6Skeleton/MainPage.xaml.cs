@@ -39,7 +39,7 @@ public partial class MainPage : ContentPage
         spreadsheetGrid.SelectionChanged += displaySelection;
         spreadsheetGrid.SetSelection(2,3);
         SavePath.Text = "";
-        model = new(s => true, s => s, "ps6");
+        model = new(s => Regex.IsMatch(s, @"^[A-Z][1-9][0-9]?$"), s => s.ToUpper(), "ps6");
         displaySelection(spreadsheetGrid);
         mostRecentSavePath = "";
     }
@@ -76,8 +76,8 @@ public partial class MainPage : ContentPage
         }
         if (goAhead)
         {
-            spreadsheetGrid.Clear();                            // clears display
-            model = new(s => true, s => s, "ps6");              // MAKE SURE TO CHANGE ON RELEASES
+            spreadsheetGrid.Clear();                                                               // clears display
+            model = new(s => Regex.IsMatch(s, @"^[A-Z][1-9][0-9]?$"), s => s.ToUpper(), "ps6");    // MAKE SURE TO CHANGE ON RELEASES
             SavePath.Text = "";
         }
     }
@@ -101,7 +101,7 @@ public partial class MainPage : ContentPage
                 }
                 catch
                 {
-                    model = new(s => true, s => s, "ps6");
+                    model = new(s => Regex.IsMatch(s, "^[A-Z][1-9][0-9]?$"), s => s.ToUpper(), "ps6");
                     SpreadsheetGridChanger(model.GetNamesOfAllNonemptyCells());
                     SavePath.Text = fileResult.FullPath;
                     mostRecentSavePath = fileResult.FullPath;
@@ -111,7 +111,7 @@ public partial class MainPage : ContentPage
                 {
                     try
                     {
-                        model = new(fileResult.FullPath, s => true, s => s, "ps6");
+                        model = new(fileResult.FullPath, s => Regex.IsMatch(s, "^[A-Z][1-9][0-9]?$"), s => s.ToUpper(), "ps6");
                         SpreadsheetGridChanger(model.GetNamesOfAllNonemptyCells());
                         SavePath.Text = fileResult.FullPath;
                         mostRecentSavePath = fileResult.FullPath;
@@ -245,4 +245,69 @@ public partial class MainPage : ContentPage
                 spreadsheetGrid.SetValue(letterIndex, numberIndex, "FormErr");
         }
     }
+
+    private void RefreshFilepath(Object sender, EventArgs e)
+    {
+        SavePath.Text = mostRecentSavePath;
+    }
+
+    // HELP MENU POPUPS
+
+    /// <summary>
+    /// Simply displays a popup for the help page for saving files.
+    /// </summary>
+    private async void SavingFilesPopup(Object sender, EventArgs e)
+    {
+        await DisplayAlert("Saving Files Help", "When saving files, your two main options are specifying a full filepath or" +
+            " saving to the same directory your executable is stored. Whenever specifying the full filepath, the file is of course saved there," +
+            " otherwise the filepath is left blank (aside from the name of the spreadsheet) and saved to your executable's directory." +
+            " Keep in mind, too, that all spreadsheet filetypes must be .sprd when saving, or else the save will not be executed." +
+            "\nIf, for some reason, you've forgotten the path to the file you're currently working on, and your filepath entry has changed," +
+            " click on the Current Filepath button under the File menu.", "OK");
+    }
+
+    /// <summary>
+    /// Simply displays a popup for the help page for opening files.
+    /// </summary>
+    private async void OpeningFilesPopup(Object sender, EventArgs e)
+    {
+        await DisplayAlert("Opening Files Help", "After clicking on the open files button, an operating system specific file manager will open" +
+            " and you can select whichever .sprd file you would like to open. Make sure the filetype is .sprd, or else the file will not be recognized" +
+            " and will not open.", "OK");
+    }
+
+    /// <summary>
+    /// Simply displays a popup for the help page for creating new spreadsheets.
+    /// </summary>
+    private async void NewSpreadsheetPopup(Object sender, EventArgs e)
+    {
+        await DisplayAlert("Creating New Spreadsheets Help", "To create a new spreadsheet, simply click on the File dropdown menu and select New." +
+            " If you have unsaved changes in your current working spreadsheet, there should be a popup menu asking you if you wish to continue." +
+            " You can abort or continue the operation from here.", "OK");
+    }
+
+    /// <summary>
+    /// Simply displays a popup for the help page for understanding cells.
+    /// </summary>
+    private async void UnderstandingCellsPopup(Object sender, EventArgs e)
+    {
+        await DisplayAlert("Understanding Cells Help", "At the top of the program, there should be a display containing the name of the currently highlighted cell," +
+            " a display containing the value of the currently highlighted cell, and another display containing the contents of the currently highlighted cell." +
+            " It should be noted by the user that only the contents entry can be altered, and alters the value of the selected cell. After entering in the desired contents" +
+            " of your selected cell, either click off of the entry or press enter and the spreadsheet's data will reflect the change." +
+            " This also changes all other cells that depend on that cell. Make sure to enter in valid entries, or the contents change will either give an error popup or display as a formula error.", "OK");
+    }
+
+    /// <summary>
+    /// Simply displays a popup for the help page for understanding errors.
+    /// </summary>
+    private async void UnderstandingErrorsPopup(Object sender, EventArgs e)
+    {
+        await DisplayAlert("Understanding Errors Help", "A few different kinds of errors may show up in your use of the program. While typically descriptive of what went wrong within the title or message," +
+            " these messages can still be very intimidating.\nThe first, and arguably most common error to look out for is saving your file incorrectly." +
+            " Whenever this error is encountered, double check that the filepath is entered in correctly with no typos, and that the directory that you're trying to save the file to really exists." +
+            "\nAnother kind of error relates to incorrectly input formulas. Ensure that all values are defined in case of formula error values, and ensure that no circular dependencies or syntax errors are present given a popup.", "OK");
+    }
+
+
 }

@@ -10,8 +10,19 @@
                 <MenuFlyoutItem Text="New" Clicked="NewClicked"/>
                 <MenuFlyoutItem Text="Open" Clicked="OpenClicked" />
                 <MenuFlyoutItem Text="Save" Clicked="SaveClicked" />
-            </MenuBarItem>
-        </ContentPage.MenuBarItems>
+                <MenuFlyoutItem Text="Current Filepath" Clicked="RefreshFilepath"/>
+        </MenuBarItem>
+        
+        
+            <MenuBarItem Text="Help">
+                <MenuFlyoutItem Text="Saving Files" Clicked="SavingFilesPopup"/>
+                <MenuFlyoutItem Text="Opening Files" Clicked="OpeningFilesPopup"/>
+                <MenuFlyoutItem Text="Creating a new Spreadsheet" Clicked="NewSpreadsheetPopup"/>
+                <MenuFlyoutItem Text="Understanding Cells" Clicked="UnderstandingCellsPopup"/>
+                <MenuFlyoutItem Text="Understanding Errors" Clicked="UnderstandingErrorsPopup"/>
+        </MenuBarItem>
+    </ContentPage.MenuBarItems>
+    
 
     <Grid RowDefinitions="40, 40, 40, *">
         <Entry x:Name="SavePath"
