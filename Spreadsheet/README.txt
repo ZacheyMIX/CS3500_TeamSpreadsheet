@@ -55,3 +55,4 @@ Dev notes and TODOs:
 - We need to find out whether or not we agree with the current approach for getting previous contents;
 e.g. should we enforce the entry box being blank before clicking on a different cell,
 or should the contents ALWAYS change depending on the cell?
+
