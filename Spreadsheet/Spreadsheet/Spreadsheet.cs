@@ -528,6 +528,7 @@ namespace SS
             {
                 if ((string)GetCellContents(name) == "")
                     return dependencies;
+                    
             }
             foreach (string cell in GetCellsToRecalculate(name))
             {

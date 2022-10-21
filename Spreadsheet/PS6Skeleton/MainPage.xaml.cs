@@ -146,7 +146,6 @@ public partial class MainPage : ContentPage
     /// </summary>
     private async void ContentsChanged(Object sender, EventArgs e)
     {
-        System.Diagnostics.Debug.WriteLine(CellContent.Text);
         try
         {
             IList<string> toBeUpdated = model.SetContentsOfCell(CellName.Text, CellContent.Text);
@@ -218,6 +217,11 @@ public partial class MainPage : ContentPage
     /// <param name="set"> set of names of cells that need to be updated in the spreadsheet grid </param>
     private void SpreadsheetGridChanger(IEnumerable<string> set)
     {
+        if(set.Count() == 0)
+        {
+            spreadsheetGrid.GetSelection(out int col, out int row);
+            spreadsheetGrid.SetValue(col, row, "");
+        }
         foreach (string cellname in set)
         {
             int letterIndex = char.ToUpper(cellname[0]) - 65;       // additional subtraction by 1 for indexing
