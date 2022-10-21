@@ -11,7 +11,16 @@
                 <MenuFlyoutItem Text="Open" Clicked="OpenClicked" />
                 <MenuFlyoutItem Text="Save" Clicked="SaveClicked" />
             </MenuBarItem>
-        </ContentPage.MenuBarItems>
+        
+        
+            <MenuBarItem Text="Help">
+                <MenuFlyoutItem Text="Saving Files" Clicked="SavingFilesPopup"/>
+                <MenuFlyoutItem Text="Opening Files" Clicked="OpeningFilesPopup"/>
+                <MenuFlyoutItem Text="Understanding Cells" Clicked="UnderstandingCellsPopup"/>
+                <MenuFlyoutItem Text="Understanding Errors" Clicked="UnderstandingErrorsPopup"/>
+        </MenuBarItem>
+    </ContentPage.MenuBarItems>
+    
 
     <Grid RowDefinitions="40, 40, 40, *">
         <Entry x:Name="SavePath"
