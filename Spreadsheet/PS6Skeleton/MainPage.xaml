@@ -16,6 +16,7 @@
             <MenuBarItem Text="Help">
                 <MenuFlyoutItem Text="Saving Files" Clicked="SavingFilesPopup"/>
                 <MenuFlyoutItem Text="Opening Files" Clicked="OpeningFilesPopup"/>
+                <MenuFlyoutItem Text="Creating a new Spreadsheet" Clicked="NewSpreadsheetPopup"/>
                 <MenuFlyoutItem Text="Understanding Cells" Clicked="UnderstandingCellsPopup"/>
                 <MenuFlyoutItem Text="Understanding Errors" Clicked="UnderstandingErrorsPopup"/>
         </MenuBarItem>

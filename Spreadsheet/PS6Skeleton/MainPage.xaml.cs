@@ -271,6 +271,16 @@ public partial class MainPage : ContentPage
     }
 
     /// <summary>
+    /// Simply displays a popup for the help page for creating new spreadsheets.
+    /// </summary>
+    private async void NewSpreadsheetPopup(Object sender, EventArgs e)
+    {
+        await DisplayAlert("Creating New Spreadsheets Help", "To create a new spreadsheet, simply click on the File dropdown menu and select New." +
+            " If you have unsaved changes in your current working spreadsheet, there should be a popup menu asking you if you wish to continue." +
+            " You can abort or continue the operation from here.", "OK");
+    }
+
+    /// <summary>
     /// Simply displays a popup for the help page for understanding cells.
     /// </summary>
     private async void UnderstandingCellsPopup(Object sender, EventArgs e)
