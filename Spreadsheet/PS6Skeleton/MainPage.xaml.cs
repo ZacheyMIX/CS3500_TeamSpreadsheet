@@ -252,6 +252,7 @@ public partial class MainPage : ContentPage
 
     /// <summary>
     /// Changes SavePath entry text to the most recent save path in case the user forgot the current path or some other reason.
+    /// SPECIAL FEATURE
     /// </summary>
     private void RefreshFilepath(Object sender, EventArgs e)
     {
@@ -314,6 +315,14 @@ public partial class MainPage : ContentPage
             " these messages can still be very intimidating.\nThe first, and arguably most common error to look out for is saving your file incorrectly." +
             " Whenever this error is encountered, double check that the filepath is entered in correctly with no typos, and that the directory that you're trying to save the file to really exists." +
             "\nAnother kind of error relates to incorrectly input formulas. Ensure that all values are defined in case of formula error values, and ensure that no circular dependencies or syntax errors are present given a popup.", "OK");
+    }
+
+    private async void SpecialFeaturesPopup(Object sender, EventArgs e)
+    {
+        await DisplayAlert("Special Features!", 
+            "While using our spreadsheet, you will find that the colors of the selected cell will change depending whether or not the cell is an odd or even cell"
+            + "\nThats our first special feature!\nIf you ever somehow accidentally delete the current save path from the text box, fear not! If you use " +
+            "the Current File Path in the file dropdown, it will bring the filepath back to you.\nAnd thats our second special feature!", "OK");
     }
 
 

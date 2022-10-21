@@ -20,6 +20,7 @@
                 <MenuFlyoutItem Text="Creating a new Spreadsheet" Clicked="NewSpreadsheetPopup"/>
                 <MenuFlyoutItem Text="Understanding Cells" Clicked="UnderstandingCellsPopup"/>
                 <MenuFlyoutItem Text="Understanding Errors" Clicked="UnderstandingErrorsPopup"/>
+                <MenuFlyoutItem Text="Special Features" Clicked="SpecialFeaturesPopup"/>
         </MenuBarItem>
     </ContentPage.MenuBarItems>
     
