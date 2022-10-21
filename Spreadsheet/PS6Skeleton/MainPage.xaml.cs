@@ -250,6 +250,9 @@ public partial class MainPage : ContentPage
         }
     }
 
+    /// <summary>
+    /// Changes SavePath entry text to the most recent save path in case the user forgot the current path or some other reason.
+    /// </summary>
     private void RefreshFilepath(Object sender, EventArgs e)
     {
         SavePath.Text = mostRecentSavePath;
