@@ -130,6 +130,7 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         return true;
     }
 
+
     /// <summary>
     /// If the zero-based column and row are in range, uses them to set
     /// the current selection and returns true.  Otherwise, returns false.
@@ -295,12 +296,26 @@ public class SpreadsheetGrid : ScrollView, IDrawable
         // Highlight the selection, if it is visible
         if ((_selectedCol - _firstColumn >= 0) && (_selectedRow - _firstRow >= 0))
         {
-            canvas.FillColor = Colors.Yellow;
-            canvas.FillRectangle(LABEL_COL_WIDTH + (_selectedCol - _firstColumn) * DATA_COL_WIDTH + 1,
-                              LABEL_ROW_HEIGHT + (_selectedRow - _firstRow) * DATA_ROW_HEIGHT + 1,
-                              DATA_COL_WIDTH - 2,
-                              DATA_ROW_HEIGHT - 2);
-            
+            float x = LABEL_COL_WIDTH + (_selectedCol - _firstColumn) * DATA_COL_WIDTH + 1;
+            float y = LABEL_ROW_HEIGHT + (_selectedRow - _firstRow) * DATA_ROW_HEIGHT + 1;
+            float oddEven = (y - 11) / 20;
+            System.Diagnostics.Debug.WriteLine(oddEven);
+            if(oddEven % 2 == 0)
+            {
+                canvas.FillColor = Colors.Yellow;
+                canvas.FillRectangle(x,
+                                  y,
+                                  DATA_COL_WIDTH - 2,
+                                  DATA_ROW_HEIGHT - 2);
+            }
+            else
+            {
+                canvas.FillColor = Colors.LightBlue;
+                canvas.FillRectangle(x,
+                                  y,
+                                  DATA_COL_WIDTH - 2,
+                                  DATA_ROW_HEIGHT - 2);
+            }
         }
 
         // Draw the text
